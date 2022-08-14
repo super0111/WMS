@@ -14,12 +14,12 @@ const pallets = [
   { slotId: 1, id: 4, type: "type4", description: "description4", createdDate: "2022/8/3", updateDate: "2022/8/16", condition: "condition4" },
   { slotId: 2, id: 5, type: "type5", description: "description5", createdDate: "2022/8/7", updateDate: "2022/8/11", condition: "condition5" },
   { slotId: 3, id: 6, type: "type6", description: "description6", createdDate: "2022/8/8", updateDate: "2022/8/10", condition: "condition6" },
-  { slotId: 2, id: 4, type: "type4", description: "description4", createdDate: "2022/8/3", updateDate: "2022/8/16", condition: "condition4" },
-  { slotId: 3, id: 5, type: "type5", description: "description5", createdDate: "2022/8/7", updateDate: "2022/8/11", condition: "condition5" },
-  { slotId: 4, id: 6, type: "type6", description: "description6", createdDate: "2022/8/8", updateDate: "2022/8/10", condition: "condition6" },
-  { slotId: 5, id: 4, type: "type4", description: "description4", createdDate: "2022/8/3", updateDate: "2022/8/16", condition: "condition4" },
-  { slotId: 2, id: 5, type: "type5", description: "description5", createdDate: "2022/8/7", updateDate: "2022/8/11", condition: "condition5" },
-  { slotId: 6, id: 6, type: "type6", description: "description6", createdDate: "2022/8/8", updateDate: "2022/8/10", condition: "condition6" },
+  { slotId: 2, id: 7, type: "type4", description: "description4", createdDate: "2022/8/3", updateDate: "2022/8/16", condition: "condition4" },
+  { slotId: 3, id: 8, type: "type5", description: "description5", createdDate: "2022/8/7", updateDate: "2022/8/11", condition: "condition5" },
+  { slotId: 4, id: 9, type: "type6", description: "description6", createdDate: "2022/8/8", updateDate: "2022/8/10", condition: "condition6" },
+  { slotId: 5, id: 10, type: "type4", description: "description4", createdDate: "2022/8/3", updateDate: "2022/8/16", condition: "condition4" },
+  { slotId: 2, id: 11, type: "type5", description: "description5", createdDate: "2022/8/7", updateDate: "2022/8/11", condition: "condition5" },
+  { slotId: 6, id: 12, type: "type6", description: "description6", createdDate: "2022/8/8", updateDate: "2022/8/10", condition: "condition6" },
 ]
 
 module.exports = {

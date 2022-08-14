@@ -30,8 +30,8 @@ const Pallet = () => {
 
   const generateQrCode = async (id) => {
     const pallet = pallets.find(item=>item.id === id);
-    setSelectPallet(id)
     const qrCodeData = JSON.stringify({ pallet })
+    setSelectPallet(id)
 
     try {
       const response = await QRCode.toDataURL(qrCodeData);
@@ -99,7 +99,7 @@ const Pallet = () => {
                         <Typography varient="p">{item.condition}</Typography>
                       </Box>
                       <Box display="flex" justifyContent="center">
-                        {qrCodeUrl && selectPallet === i+1? 
+                        { qrCodeUrl && selectPallet === item.id ? 
                           ( <a href={qrCodeUrl} download>
                               <img src={qrCodeUrl} alt="img"/>
                           </a>)
