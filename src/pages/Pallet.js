@@ -30,9 +30,7 @@ const Pallet = () => {
 
   const generateQrCode = async (id) => {
     const pallet = pallets.find(item=>item.id === id);
-
     setSelectPallet(id)
-
     const qrCodeData = JSON.stringify({ pallet })
 
     try {
@@ -72,7 +70,7 @@ const Pallet = () => {
                           border: "1px solid #eeeeee",
                           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
                           "&:hover": {
-                            boxShadow: "3px 3px 4px rgba(0, 0, 0, 0.12), 3px 3px 4px rgba(0, 0, 0, 0.24)",
+                            boxShadow: "1px 2px 2px rgba(0, 0, 0, 0.12), 1px 1px 2px rgba(0, 0, 0, 0.24)",
                           },
                         }}
                     >
@@ -101,7 +99,7 @@ const Pallet = () => {
                         <Typography varient="p">{item.condition}</Typography>
                       </Box>
                       <Box display="flex" justifyContent="center">
-                        {qrCodeUrl ? 
+                        {qrCodeUrl && selectPallet === i+1? 
                           ( <a href={qrCodeUrl} download>
                               <img src={qrCodeUrl} alt="img"/>
                           </a>)

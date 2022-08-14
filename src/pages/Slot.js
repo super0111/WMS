@@ -22,12 +22,7 @@ const Slot = () => {
   const [ selected, setSelected ] = useState([]);
   const [ filterName, setFilterName ] = useState('');
   const [ selectSlot, setSelectSlot ] = useState("");
-
   const [qrCodeUrl, setQrCodeUrl] = useState('');
-
-  useEffect(() => {
-    console.log('qr url changed to: ', qrCodeUrl)
-  }, [qrCodeUrl])
 
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
@@ -37,14 +32,12 @@ const Slot = () => {
     navigate(`/dashboard/pallet/${id}`)
   }
   const handleKeyDown = (ev, id) => {
-    // check keys if you want
     if (ev.keyCode === 13) {
       navigate(`/dashboard/pallet/${id}`)
     }
   }
 
   const generateQrCode = async (id) => {
-    console.log('generate qr code for slot: ', id)
     const slot = slots.find(item=>item.id === id);
     const qrCodeData = JSON.stringify({ slot })
     setSelectSlot(id)
@@ -79,28 +72,14 @@ const Slot = () => {
                       padding: '20px 15px 15px 15px',
                     }}
                   >
-                    <Box 
+                    <Box
                       sx={{
-                        
-                          // eslint-disable-next-line no-nested-ternary
-                          backgroundColor: `${item.error
-                          ? 'hsl(9deg 68% 85%)'
-                          :  item.capacity > item.filledNumber
-                          ? "hsl(80deg 38% 51%)"
-                          : '#ff7a6b'}`,
-                          // item.capacity > item.filledNumber ? 
-                          // {
-                          //   backgroundColor: "hsl(80deg 38% 51%)",
-                          // }: 
-                          // item.capacity > item.filledNumber ? 
-                          // {
-                          //   backgroundColor: "#ff7a6b",
-                          // } 
-                          // : item.error === true ? 
-                          // {
-                          //   backgroundColor: "hsl(9deg 68% 85%)",
-                          // } 
-                          // : ""
+                        // eslint-disable-next-line no-nested-ternary
+                        backgroundColor: `${item.error
+                        ? '#ff7a6b'
+                        :  item.capacity > item.filledNumber
+                        ? "hsl(80deg 38% 51%)"
+                        : 'hsl(9deg 68% 85%)'}`,
                         padding: '20px 15px 15px 15px',
                         borderRadius: "10px",
                         border: "1px solid #eeeeee",
@@ -110,11 +89,14 @@ const Slot = () => {
                         },
                       }}
                     >
-                      <div style={{cursor: "pointer"}} aria-hidden="true" onClick={()=>handleSlotClick(item.id)} onKeyDown={()=>handleKeyDown(item.id)}>
+                      <div style={{cursor: "pointer", position: "relative"}} aria-hidden="true" onClick={()=>handleSlotClick(item.id)} onKeyDown={()=>handleKeyDown(item.id)}>
                         <Box display="flex" justifyContent="center" sx={{width : "80px", margin: "auto", borderRadius: "10px", padding: "3px", marginBottom: "10px", backgroundColor: "white"}}>
                           <Typography sx={{marginRight: "10px", fontSize: "14px", fontWeight: "bold"}} varient="p">Slot ID.</Typography>
                           <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{item.id}</Typography>
                         </Box>
+                        {
+                          item.error && <Typography sx={{position: "absolute", top: "-10px", right: "0px", fontSize: "14px", color: "white"}} variant="p">Slot Error</Typography>
+                        }
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} varient="p">Slot type</Typography>
                           <Typography varient="p">{item.type}</Typography>
@@ -136,6 +118,7 @@ const Slot = () => {
                           <Typography varient="p">{item.filledNumber}</Typography>
                         </Box>
                       </div>
+
                       <Box display="flex" justifyContent="center">
                         {qrCodeUrl && selectSlot === i+1 ? 
                           ( <a href={qrCodeUrl} download>
