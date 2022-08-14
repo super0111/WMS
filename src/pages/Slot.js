@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Card,
@@ -25,6 +25,10 @@ const Slot = () => {
 
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
+  useEffect(() => {
+    console.log('qr url changed to: ', qrCodeUrl)
+  }, [qrCodeUrl])
+
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
   };
@@ -40,6 +44,7 @@ const Slot = () => {
   }
 
   const generateQrCode = async (id) => {
+    console.log('generate qr code for slot: ', id)
     const slot = slots.find(item=>item.id === id);
     const qrCodeData = JSON.stringify({ slot })
     setSelectSlot(id)
@@ -69,28 +74,33 @@ const Slot = () => {
             <Grid container>
               {
                 slots.map((item, i)=>(
-                  <Grid item md={4} sm={6} xs={12}
+                  <Grid item md={4} sm={6} xs={12} key={i}
                     sx={{
                       padding: '20px 15px 15px 15px',
                     }}
                   >
                     <Box 
                       sx={{
-                        ...(
-                          item.capacity > item.filledNumber ? 
-                          {
-                            backgroundColor: "hsl(80deg 38% 51%)",
-                          }: 
+                        
+                          // eslint-disable-next-line no-nested-ternary
+                          backgroundColor: `${item.error
+                          ? 'hsl(9deg 68% 85%)'
+                          :  item.capacity > item.filledNumber
+                          ? "hsl(80deg 38% 51%)"
+                          : '#ff7a6b'}`,
                           // item.capacity > item.filledNumber ? 
-                          {
-                            backgroundColor: "#ff7a6b",
-                          } 
+                          // {
+                          //   backgroundColor: "hsl(80deg 38% 51%)",
+                          // }: 
+                          // item.capacity > item.filledNumber ? 
+                          // {
+                          //   backgroundColor: "#ff7a6b",
+                          // } 
                           // : item.error === true ? 
                           // {
                           //   backgroundColor: "hsl(9deg 68% 85%)",
                           // } 
                           // : ""
-                        ),
                         padding: '20px 15px 15px 15px',
                         borderRadius: "10px",
                         border: "1px solid #eeeeee",
