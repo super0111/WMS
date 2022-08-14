@@ -1,10 +1,10 @@
 const slots = [
-  { id: 1, type: "type1", location: "location1", capacity: 10, filledNumber: 3, error: "true" },
-  { id: 2, type: "type2", location: "location2", capacity: 20, filledNumber: 5, error: "false" },
-  { id: 3, type: "type3", location: "location3", capacity: 15, filledNumber: 18, error: "false" },
-  { id: 4, type: "type4", location: "location4", capacity: 16, filledNumber: 9, error: "false" },
-  { id: 5, type: "type5", location: "location5", capacity: 16, filledNumber: 1, error: "false" },
-  { id: 6, type: "type6", location: "location6", capacity: 13, filledNumber: 8, error: "false" },
+  { id: 1, type: "type1", location: "location1", capacity: 10, filledNumber: 3, error: true },
+  { id: 2, type: "type2", location: "location2", capacity: 20, filledNumber: 5, error: false },
+  { id: 3, type: "type3", location: "location3", capacity: 15, filledNumber: 18, error: false },
+  { id: 4, type: "type4", location: "location4", capacity: 16, filledNumber: 9, error: false },
+  { id: 5, type: "type5", location: "location5", capacity: 16, filledNumber: 1, error: false },
+  { id: 6, type: "type6", location: "location6", capacity: 13, filledNumber: 8, error: false },
 ]
 
 const pallets = [
