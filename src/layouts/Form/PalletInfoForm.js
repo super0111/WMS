@@ -4,7 +4,8 @@ import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
 export default function PalletInfoForm() {
-  const [ slotData, setSlotData ] = useState([]);
+  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  // const [ slotData, setSlotData ] = useState([]);
   const [ palletType, setPalletType ] = useState("")
   const [ palletDescription, setPalletDescription ] = useState("")
   const [ createdDate, setCreatedDate ] = useState("")
@@ -23,13 +24,22 @@ export default function PalletInfoForm() {
   }
 
   useEffect(()=>{
-    console.log("slotDataslotData", slotData)
-    localStorage.setItem('slotData', JSON.stringify(slotData));
+    console.log("slotData slotData", slotData)
+    if(slotData) {
+      localStorage.setItem('slotData', JSON.stringify(slotData));
+      const items = JSON.parse(localStorage.getItem('slotData'));
+
+      console.log('slot items in local storage: ', items)
+    }
+      
   }, [slotData])
 
   useEffect(()=> {
     const items = JSON.parse(localStorage.getItem('slotData'));
     console.log("locallllll items", items)
+  //   if(items && items.length) {
+  //     setSlotData(items)
+  //   }
   }, [])
 
   return (
