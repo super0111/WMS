@@ -1,36 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Grid, Container, Typography,TextField,Paper, Button, Checkbox  } from '@mui/material';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
 export default function SlotInfoForm() {
+  const navigate = useNavigate();
   const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  const [ id, setId ] = useState();
   const [ slotType, setSlotType ] = useState("");
   const [ slotLocation, setSlotLocation ] = useState("");
   const [ slotCapacity, setSlotCapacity ] = useState("");
   const [ openNumber, setOpenNumber ] = useState("");
   const [ filledNumber, setFilledNumber ] = useState("");
+  const [ slotError, setChecked ] = useState(false);
 
   const handleCreateSlot = () => {
+    const id = slotData.length +1;
     const formData = {
+      id,
       slotType,
       slotLocation,
       slotCapacity,
       openNumber,
       filledNumber,
+      slotError,
     }
     setSlotData([...slotData, formData])
+    .then(
+      navigate('/dashboard/slot')
+    )
   }
 
   useEffect(()=>{
-    console.log("slotDataslotData", slotData)
     localStorage.setItem('slotData', JSON.stringify(slotData));
   }, [slotData])
-
-  // useEffect(()=> {
-  //   const items = JSON.parse(localStorage.getItem('slotData'));
-  //   console.log("locallllll items", items)
-  // }, [])
 
   return (
     <Page title="Dashboard">
@@ -86,6 +90,22 @@ export default function SlotInfoForm() {
                 label="Filled Slot Number" 
                 variant="standard"
                 onChange={(e)=>setFilledNumber(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}
+              sx={{
+                display: "flex",
+                alignItems: 'center',
+              }}
+            >
+              <Typography component='div'>Slot Status</Typography>
+              <Checkbox
+                id="filledSlotNumber" 
+                fullWidth
+                label="Filled Slot Number" 
+                variant="standard"
+                checked={slotError}
+                onChange={(e)=>setChecked(e.target.checked)}
               />
             </Grid>
             <Grid item xs={12}>

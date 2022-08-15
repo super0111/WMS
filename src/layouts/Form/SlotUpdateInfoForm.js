@@ -1,33 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
-export default function SlotUpdateInfoForm() {
-  const [ slotData,setSlotData ] = useState([])
+export default function SlotUpdateInfoForm(props) {
+  const id = props.id;
+  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  const [ updateItem, setUpdateItem ] = useState("")
   const [ slotType, setSlotType ] = useState("")
   const [ slotLocation, setSlotLocation ] = useState("")
   const [ slotCapacity, setSlotCapacity ] = useState("")
-  const [ openNumber, setOpenNumber ] = useState("")
   const [ filledNumber, setFilledNumber ] = useState("")
 
-  const handleCreateSlot = (props) => {
-    const id = props.id;
+  useEffect(() => {
+    const item = slotData.find((item)=>item.id === Number(id));
+    setUpdateItem(item);
+  }, [])
+
+  useEffect(() => {
+    setSlotType(updateItem?.slotType)
+    setSlotLocation(updateItem?.slotLocation)
+    setSlotCapacity(updateItem?.slotCapacity)
+    setFilledNumber(updateItem?.filledNumber)
+  }, [updateItem])
+
+  useEffect(() => {
+    console.log('updated slot data: ', slotData)
+    localStorage.setItem('slotData', JSON.stringify(slotData))
+  }, [slotData])
+
+  const handleCreateSlot = () => {
     const formData = {
+      id: Number(id),
       slotType,
       slotLocation,
       slotCapacity,
-      openNumber,
       filledNumber,
     }
-    console.log("formdata", formData)
+    console.log('updated data: ', formData)
+    setSlotData(slotData.map((item) => {
+      if(item.id === formData.id) {
+        return formData
+      }
+      return item;
+    }))
   }
-  
-  useEffect(()=> {
-    const items = JSON.parse(localStorage.getItem('slotData'));
-    
-    setSlotData(items)
-  }, [])
+
+
 
   return (
     <Page title="Dashboard">
@@ -45,6 +64,7 @@ export default function SlotUpdateInfoForm() {
                 label="Slot Type"
                 fullWidth
                 variant="standard"
+                value={slotType}
                 onChange={(e)=>setSlotType(e.target.value)}
               />
             </Grid>
@@ -55,6 +75,7 @@ export default function SlotUpdateInfoForm() {
                 label="Slot Location"
                 fullWidth
                 variant="standard"
+                value={slotLocation}
                 onChange={(e)=>setSlotLocation(e.target.value)}
               />
             </Grid>
@@ -64,10 +85,11 @@ export default function SlotUpdateInfoForm() {
                 fullWidth
                 label="Slot Capacity" 
                 variant="standard"
+                value={slotCapacity}
                 onChange={(e)=>setSlotCapacity(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 id="openSlotNumber" 
                 fullWidth
@@ -75,13 +97,14 @@ export default function SlotUpdateInfoForm() {
                 variant="standard"
                 onChange={(e)=>setOpenNumber(e.target.value)}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 id="filledSlotNumber" 
                 fullWidth
                 label="Filled Slot Number" 
                 variant="standard"
+                value={filledNumber}
                 onChange={(e)=>setFilledNumber(e.target.value)}
               />
             </Grid>
@@ -90,7 +113,7 @@ export default function SlotUpdateInfoForm() {
                 variant="contained"
                 onClick={handleCreateSlot}
               >
-                Create new slot
+                Update slot
               </Button>
             </Grid>
           </Grid>

@@ -1,10 +1,11 @@
+import { useParams } from 'react-router-dom';
 import { Grid, Container, Typography } from '@mui/material';
 import Page from '../components/Page';
 import PalletInfoForm from '../layouts/Form/PalletInfoForm';
 import Iconify from '../components/Iconify';
 
 export default function AddNewPallet() {
-
+  const id = useParams();
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
@@ -13,7 +14,7 @@ export default function AddNewPallet() {
         </Typography>
 
         <Grid container spacing={3}>
-          <PalletInfoForm />
+          <PalletInfoForm id={id.id} />
             
           {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits

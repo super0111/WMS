@@ -3,31 +3,55 @@ import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/mater
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
-export default function PalletInfoForm() {
-  const [ palletData, setPalletData ] = useState([])
+export default function PalletInfoForm(props) {
+  const id = props.id;
+  const [ palletData, setPalletData ] = useState(JSON.parse(localStorage.getItem('palletData')) || []);
+  const [ updateItem, setUpdateItem ] = useState("")
+  const [ palletId, setPalletID ] = useState("")
+  const [ palletSlotId, setPalletSlotId ] = useState("")
   const [ palletType, setPalletType ] = useState("")
   const [ palletDescription, setPalletDescription ] = useState("")
   const [ createdDate, setCreatedDate ] = useState("")
   const [ lastedDate, setLastedDate ] = useState("")
   const [ palletCondition, setPalletCondition ] = useState("")
 
-  const handleCreatePallet = (props) => {
-    const id = props.id;
+  useEffect(() => {
+    const item = palletData.find((item)=>Number(item.id) === Number(id));
+    setUpdateItem(item);
+  }, [palletData])
 
+  useEffect(() => {
+    setPalletID(updateItem?.id)
+    setPalletSlotId(updateItem?.slotId)
+    setPalletType(updateItem?.palletType)
+    setPalletDescription(updateItem?.palletDescription)
+    setCreatedDate(updateItem?.createdDate)
+    setLastedDate(updateItem?.lastedDate)
+    setPalletCondition(updateItem?.palletCondition)
+  }, [updateItem])
+
+  useEffect(() => {
+    localStorage.setItem('palletData', JSON.stringify(palletData))
+  }, [palletData, updateItem])
+
+  const handleUpdatePallet = () => {
     const formData = {
+      id,
+      slotId: palletSlotId,
       palletType,
       palletDescription,
       createdDate,
       lastedDate,
       palletCondition,
     }
-    console.log("formdata", formData)
-  }
 
-  useEffect(()=> {
-    const items = JSON.parse(localStorage.getItem('palletData'));
-    setPalletData(items)
-  }, [])
+    setPalletData(palletData.map((item) => {
+      if(Number(item.id) === Number(formData.id)) {
+        return formData
+      }
+      return item;
+    }))
+  }
 
   return (
     <Page title="Dashboard">
@@ -45,6 +69,7 @@ export default function PalletInfoForm() {
                 label="Pallet Type"
                 fullWidth
                 variant="standard"
+                value={palletType}
                 onChange={(e)=>setPalletType(e.target.value)}
               />
             </Grid>
@@ -55,6 +80,7 @@ export default function PalletInfoForm() {
                 label="Pallet Description"
                 fullWidth
                 variant="standard"
+                value={palletDescription}
                 onChange={(e)=>setPalletDescription(e.target.value)}
               />
             </Grid>
@@ -64,6 +90,7 @@ export default function PalletInfoForm() {
                 fullWidth
                 label="Data Created" 
                 variant="standard"
+                value={createdDate}
                 onChange={(e)=>setCreatedDate(e.target.value)}
               />
             </Grid>
@@ -73,22 +100,24 @@ export default function PalletInfoForm() {
                 fullWidth
                 label="Last Update" 
                 variant="standard"
+                value={lastedDate}
                 onChange={(e)=>setLastedDate(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 id="palletCondition" 
+                label="Pallet Condition"
                 fullWidth
-                label="Pallet Condition" 
                 variant="standard"
+                value={palletCondition}
                 onChange={(e)=>setPalletCondition(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <Button 
                 variant="contained"
-                onClick={handleCreatePallet}
+                onClick={handleUpdatePallet}
               >
                 Create new Pallet
               </Button>

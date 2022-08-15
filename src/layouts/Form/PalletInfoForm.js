@@ -3,9 +3,10 @@ import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/mater
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
-export default function PalletInfoForm() {
-  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
-  // const [ slotData, setSlotData ] = useState([]);
+export default function PalletInfoForm(props) {
+  const slotId = props.id;
+  const [ id, setId ] = useState(0);
+  const [ palletData, setPalletData ] = useState(JSON.parse(localStorage.getItem('palletData')) || []);
   const [ palletType, setPalletType ] = useState("")
   const [ palletDescription, setPalletDescription ] = useState("")
   const [ createdDate, setCreatedDate ] = useState("")
@@ -13,41 +14,32 @@ export default function PalletInfoForm() {
   const [ palletCondition, setPalletCondition ] = useState("")
 
   const handleCreatePallet = () => {
+    const id = palletData.length +1;
+
     const formData = {
+      id,
+      slotId,
       palletType,
       palletDescription,
       createdDate,
       lastedDate,
       palletCondition,
     }
-    setSlotData([...slotData, formData])
+    setPalletData([...palletData, formData])
   }
+  console.log('palletData', palletData)
+
 
   useEffect(()=>{
-    console.log("slotData slotData", slotData)
-    if(slotData) {
-      localStorage.setItem('slotData', JSON.stringify(slotData));
-      const items = JSON.parse(localStorage.getItem('slotData'));
-
-      console.log('slot items in local storage: ', items)
-    }
-      
-  }, [slotData])
-
-  useEffect(()=> {
-    const items = JSON.parse(localStorage.getItem('slotData'));
-    console.log("locallllll items", items)
-  //   if(items && items.length) {
-  //     setSlotData(items)
-  //   }
-  }, [])
+    localStorage.setItem('palletData', JSON.stringify(palletData));
+  }, [palletData])
 
   return (
     <Page title="Dashboard">
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography variant="h6" color="inherit" noWrap>
-            Slot Information
+            Pallet Information
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>

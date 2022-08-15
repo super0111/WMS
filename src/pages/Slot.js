@@ -19,14 +19,24 @@ import { slots } from "../data";
 
 const Slot = () => {
   const navigate = useNavigate()
+  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
   const [ selected, setSelected ] = useState([]);
   const [ filterValue, setFilterValue ] = useState('');
   const [ selectSlot, setSelectSlot ] = useState("");
-  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const [ qrCodeUrl, setQrCodeUrl ] = useState('');
+  const [ searchDatas, setSearchData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
 
   const handleFilterByName = (event) => {
-    setFilterValue(event.target.value);
+    setFilterValue(event.target.value)
+    
+    if(event.target.value !== "") {
+      const searchData = slotData.filter((item) => Number(item.id) === Number(event.target.value) )
+      setSearchData(searchData)
+      return;
+    }
+    setSearchData(slotData)
   };
+
 
   const handleSlotClick = (id) => {
     navigate(`/dashboard/pallet/${id}`)
@@ -51,7 +61,9 @@ const Slot = () => {
   }
 
   const handleSlotDelete = (id) => {
-
+    const deleteData = searchDatas.filter((item)=>item.id !== id);
+    localStorage.setItem('slotData', JSON.stringify(deleteData));
+    setSearchData(deleteData)
   }
 
   return (
@@ -70,7 +82,8 @@ const Slot = () => {
           <Scrollbar>
             <Grid container>
               {
-                slots.map((item, i)=>(
+                searchDatas.length > 0 ?
+                searchDatas.map((item, i)=>(
                   <Grid item md={4} sm={6} xs={12} key={i}
                     sx={{
                       padding: '20px 15px 15px 15px',
@@ -79,9 +92,9 @@ const Slot = () => {
                     <Box
                       sx={{
                         // eslint-disable-next-line no-nested-ternary
-                        backgroundColor: `${item.error
+                        backgroundColor: `${item.slotError
                         ? '#ff7a6b'
-                        :  item.capacity > item.filledNumber
+                        :  item.slotCapacity > item.filledNumber
                         ? "hsl(80deg 38% 51%)"
                         : 'hsl(9deg 68% 85%)'}`,
                         padding: '20px 15px 15px 15px',
@@ -99,23 +112,23 @@ const Slot = () => {
                           <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{item.id}</Typography>
                         </Box>
                         {
-                          item.error && <Typography sx={{position: "absolute", top: "-10px", right: "0px", fontSize: "14px", color: "white"}} variant="p">Slot Error</Typography>
+                          item.slotError && <Typography sx={{position: "absolute", top: "-10px", right: "0px", fontSize: "14px", color: "white"}} variant="p">Slot Error</Typography>
                         }
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} varient="p">Slot type</Typography>
-                          <Typography varient="p">{item.type}</Typography>
+                          <Typography varient="p">{item.slotType}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Slot Location</Typography>
-                          <Typography varient="p">{item.location}</Typography>
+                          <Typography varient="p">{item.slotLocation}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Slot Pallet Capacity</Typography>
-                          <Typography varient="p">{item.capacity}</Typography>
+                          <Typography varient="p">{item.slotCapacity}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Nubmer of open Slots</Typography>
-                          <Typography varient="p">{item.capacity-item.filledNumber<=0?0:item.capacity-item.filledNumber}</Typography>
+                          <Typography varient="p">{item.slotCapacity-item.filledNumber<=0 ? 0 : item.slotCapacity-item.filledNumber}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Number of Filled Slots </Typography>
@@ -166,8 +179,11 @@ const Slot = () => {
                         </Button>
                       </Box>
                     </Box>
-                  </Grid>
-                ))
+                  </Grid> 
+                )) : 
+                <Box display="flex" justifyContent="center" sx={{width: "100%"}}>
+                  <Typography component="p" sx={{ textAlign: "center" }}>No Data</Typography>
+                </Box>
               }
             </Grid>
           </Scrollbar>
