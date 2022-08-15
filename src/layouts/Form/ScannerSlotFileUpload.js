@@ -36,7 +36,6 @@ export default function ScannerSlotFileUpload({ onFileSelectSuccess, onFileSelec
     const handleFileInput = (e) => {
         // Makes sure it's the correct file type.
         const file = e.target.files[0];
-        console.log("file", file)
 
         if (supportedFiles.includes(file.type)) {
             setFileName(file.name);

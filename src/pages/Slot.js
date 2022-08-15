@@ -14,8 +14,6 @@ import QRCode from 'qrcode';
 import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar';
 import { SlotListToolbar } from '../sections/@dashboard/slot';
-import { slots } from "../data";
-
 
 const Slot = () => {
   const navigate = useNavigate()
@@ -48,10 +46,9 @@ const Slot = () => {
   }
 
   const generateQrCode = async (id) => {
-    const slot = slots.find(item=>item.id === id);
+    const slot = slotData.find(item=>item.id === id);
     const qrCodeData = JSON.stringify({ slot })
     setSelectSlot(id)
-
     try {
       const response = await QRCode.toDataURL(qrCodeData);
       setQrCodeUrl(response);
@@ -65,8 +62,6 @@ const Slot = () => {
     localStorage.setItem('slotData', JSON.stringify(deleteData));
     setSearchData(deleteData)
   }
-
-  console.log("searchDatas", searchDatas)
 
   return (
     <Container>

@@ -18,7 +18,6 @@ import ScannerPalletFileUpload from '../layouts/Form/ScannerPalletFileUpload';
 
 const DetectQRCode = () => {
 	const canvasScannerRef = useRef();
-  // const [ results, setResults ] = useState([]);
   const [ results, setResults ] = useState("");
   const [ resultText, setResultText ] = useState("");
   const [ noResult, setNoResult ] = useState(false);
@@ -30,14 +29,11 @@ const DetectQRCode = () => {
 		setResultText("");
 		try {
 			const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
-
       if(qrCode === null || results === "") {
         setNoResult(true)
       }
 			setResultText(qrCode || "No QR code found");
-
       const dataInfo = JSON.parse(qrCode);
-
       console.log("dataInfo", dataInfo)
       if(dataInfo.slot && type === "slot") {
         setResults(dataInfo.slot)
@@ -45,10 +41,6 @@ const DetectQRCode = () => {
       if(dataInfo.pallet) {
         setResults("")
       }
-      // if (qrCode) setResults([...results, qrCode])
-      // results.map((result, i) =>(
-      //   setFirstName(result)
-      // ))
 		} catch (e) {
 			if (e?.name==="InvalidPDFException") {
 				setResultText("Invalid PDF");
@@ -71,10 +63,7 @@ const DetectQRCode = () => {
         setNoResult(true)
       }
 			setResultText(qrCode || "No QR code found");
-
       const dataInfo = JSON.parse(qrCode);
-
-      console.log("dataInfo", dataInfo)
       if(dataInfo.slot) {
         setResults("")
       } else 
@@ -91,6 +80,40 @@ const DetectQRCode = () => {
 				setResultText("Unknown error");
 			}
 		}
+  }
+
+  const handleSlotSave = () => {
+    const id = results.id;
+    const slotType = results.slotType;
+    const slotLocation = results.slotLocation;
+    const slotCapacity = results.slotCapacity;
+    const filledNumber = results.filledNumber;
+    const formData = {
+      id,
+      slotType,
+      slotLocation,
+      slotCapacity,
+      filledNumber,
+    }
+    localStorage.setItem('detectedPallet', JSON.stringify(formData));
+  }
+
+  const handlePalletSave = () => {
+    const id = results.id;
+    const palletType = results.palletType;
+    const palletDescription = results.palletDescription;
+    const createdDate = results.createdDate;
+    const lastedDate = results.lastedDate;
+    const palletCondition = results.palletCondition;
+    const formData = {
+      id,
+      palletType,
+      palletDescription,
+      createdDate,
+      lastedDate,
+      palletCondition,
+    }
+    localStorage.setItem('detectedSlot', JSON.stringify(formData));
   }
 
   return (
@@ -140,6 +163,7 @@ const DetectQRCode = () => {
                   },
                 }}
               >
+                <div>
                 {
                   results ?
                   <div style={{cursor: "pointer", position: "relative"}} aria-hidden="true">
@@ -149,19 +173,19 @@ const DetectQRCode = () => {
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} varient="p">Slot type</Typography>
-                      <Typography varient="p">{results.type}</Typography>
+                      <Typography varient="p">{results.slotType}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Slot Location</Typography>
-                      <Typography varient="p">{results.location}</Typography>
+                      <Typography varient="p">{results.slotLocation}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Slot Pallet Capacity</Typography>
-                      <Typography varient="p">{results.capacity}</Typography>
+                      <Typography varient="p">{results.slotCapacity}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Nubmer of open Slots</Typography>
-                      <Typography varient="p">{results.capacity-results.filledNumber}</Typography>
+                      <Typography varient="p">{results.slotCapacity-results.filledNumber}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Number of Filled Slots </Typography>
@@ -171,8 +195,23 @@ const DetectQRCode = () => {
                       <Typography sx={{width: "70%"}} variant="p">Slot status</Typography>
                       <Typography varient="p">{results.error === true ? "Error status" : "Normal status"}</Typography>
                     </Box>
+                    <Box display="flex" justifyContent="center" sx={{width: "100%", padding: "10px 0"}}>
+                      <Button 
+                        variant="outlined"
+                        sx={{
+                          width: "200px",
+                          height: "30px",
+                          fontSize: "14px",
+                          margin: "auto",
+                        }}
+                        onClick={handleSlotSave}
+                      >
+                        Save QR Detected Data
+                      </Button>
+                    </Box>
                   </div> : "No Results"
                 }
+                </div>
               </Box> :
               <Box
                 sx={{
@@ -188,17 +227,17 @@ const DetectQRCode = () => {
                 {
                   results ?
                   <div style={{cursor: "pointer", position: "relative"}} aria-hidden="true">
-                    <Box display="flex" justifyContent="center" sx={{width : "80px", margin: "auto", borderRadius: "10px", padding: "3px", marginBottom: "10px", backgroundColor: "white"}}>
+                    <Box display="flex" justifyContent="center" sx={{width : "100px", margin: "auto", borderRadius: "10px", padding: "3px", marginBottom: "10px", backgroundColor: "white"}}>
                       <Typography sx={{marginRight: "10px", fontSize: "14px", fontWeight: "bold"}} varient="p">Pallet ID.</Typography>
                       <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{results.id}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} varient="p">Pallet type</Typography>
-                      <Typography varient="p">{results.type}</Typography>
+                      <Typography varient="p">{results.palletType}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Pallet Description</Typography>
-                      <Typography varient="p">{results.description}</Typography>
+                      <Typography varient="p">{results.palletDescription}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Data Created</Typography>
@@ -206,17 +245,31 @@ const DetectQRCode = () => {
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Last Update</Typography>
-                      <Typography varient="p">{results.updateDate}</Typography>
+                      <Typography varient="p">{results.lastedDate}</Typography>
                     </Box>
                     <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                       <Typography sx={{width: "70%"}} variant="p">Pallet Condition</Typography>
-                      <Typography varient="p">{results.condition}</Typography>
+                      <Typography varient="p">{results.palletCondition}</Typography>
                     </Box>
+                    <Box display="flex" justifyContent="center" sx={{width: "100%", padding: "10px 0"}}>
+                      <Button 
+                        variant="outlined"
+                        sx={{
+                          width: "200px",
+                          height: "30px",
+                          fontSize: "14px",
+                          margin: "auto",
+                        }}
+                        onClick={handlePalletSave}
+                      >
+                        Save QR Detected Data
+                      </Button>
+                    </Box>
+
                   </div> : "No Results"
                 }
               </Box>
             }
-
           </Grid>
         </Grid>
       </Card>

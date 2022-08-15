@@ -13,7 +13,7 @@ import QRCode from 'qrcode';
 import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar';
 import { PalletListToolbar } from '../sections/@dashboard/slot';
-import { pallets, slots } from "../data";
+// import { pallets, slots } from "../data";
 
 const Pallet = () => {
   const { id } = useParams();
@@ -42,7 +42,7 @@ const Pallet = () => {
   };
 
   const generateQrCode = async (id) => {
-    const pallet = pallets.find(item=>item.id === id);
+    const pallet = palletData.find(item=>item.id === id);
     const qrCodeData = JSON.stringify({ pallet })
     setSelectPallet(id)
 
