@@ -4,7 +4,7 @@ import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
 export default function SlotInfoForm() {
-  const [ slotData, setSlotData ] = useState([]);
+  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
   const [ slotType, setSlotType ] = useState("");
   const [ slotLocation, setSlotLocation ] = useState("");
   const [ slotCapacity, setSlotCapacity ] = useState("");
@@ -27,10 +27,10 @@ export default function SlotInfoForm() {
     localStorage.setItem('slotData', JSON.stringify(slotData));
   }, [slotData])
 
-  useEffect(()=> {
-    const items = JSON.parse(localStorage.getItem('slotData'));
-    console.log("locallllll items", items)
-  }, [])
+  // useEffect(()=> {
+  //   const items = JSON.parse(localStorage.getItem('slotData'));
+  //   console.log("locallllll items", items)
+  // }, [])
 
   return (
     <Page title="Dashboard">
