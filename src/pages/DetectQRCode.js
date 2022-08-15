@@ -42,13 +42,45 @@ const DetectQRCode = () => {
       if(dataInfo.slot && type === "slot") {
         setResults(dataInfo.slot)
       } else 
-      if(dataInfo.pallet && type === "pallet") {
-        setResults(dataInfo.pallet)
+      if(dataInfo.pallet) {
+        setResults("")
       }
       // if (qrCode) setResults([...results, qrCode])
       // results.map((result, i) =>(
       //   setFirstName(result)
       // ))
+		} catch (e) {
+			if (e?.name==="InvalidPDFException") {
+				setResultText("Invalid PDF");
+			} else if (e instanceof Event) {
+				setResultText("Invalid Image");
+			} else {
+				console.log(e)
+				setResultText("Unknown error");
+			}
+		}
+  }
+
+  async function scanFile1(selectedFile, type) {
+    setType(type);
+		setResultText("");
+		try {
+			const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
+
+      if(qrCode === null || results === "") {
+        setNoResult(true)
+      }
+			setResultText(qrCode || "No QR code found");
+
+      const dataInfo = JSON.parse(qrCode);
+
+      console.log("dataInfo", dataInfo)
+      if(dataInfo.slot) {
+        setResults("")
+      } else 
+      if(dataInfo.pallet && type === "pallet") {
+        setResults(dataInfo.pallet)
+      }
 		} catch (e) {
 			if (e?.name==="InvalidPDFException") {
 				setResultText("Invalid PDF");
@@ -91,7 +123,7 @@ const DetectQRCode = () => {
                   console.log(err);
                   setResultText1(err.error)
                 }} 
-                onFileSelectSuccess={(file)=>{scanFile(file, "pallet")}}
+                onFileSelectSuccess={(file)=>{scanFile1(file, "pallet")}}
                 style={{ display: 'flex' }}
               />
             </Box>
