@@ -22,7 +22,7 @@ const StyledFileUploader = styled.label`
 
 const StyledFileName = styled.span`
     display: block;
-    font-size: 15px;
+    font-size: 14px;
     margin-top: 5px;
 `;
 

@@ -66,6 +66,8 @@ const Slot = () => {
     setSearchData(deleteData)
   }
 
+  console.log("searchDatas", searchDatas)
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -94,9 +96,9 @@ const Slot = () => {
                         // eslint-disable-next-line no-nested-ternary
                         backgroundColor: `${item.slotError
                         ? '#ff7a6b'
-                        :  item.slotCapacity > item.filledNumber
-                        ? "hsl(80deg 38% 51%)"
-                        : 'hsl(9deg 68% 85%)'}`,
+                        :  item.slotCapacity >= item.filledNumber
+                        ? 'hsl(9deg 68% 85%)'
+                        : "hsl(80deg 38% 51%)"}`,
                         padding: '20px 15px 15px 15px',
                         borderRadius: "10px",
                         border: "1px solid #eeeeee",

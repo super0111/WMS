@@ -26,15 +26,10 @@ export default function SlotInfoForm() {
       filledNumber,
       slotError,
     }
-    setSlotData([...slotData, formData])
-    .then(
-      navigate('/dashboard/slot')
-    )
+    setSlotData([...slotData, formData]);
+    localStorage.setItem('slotData', JSON.stringify([...slotData, formData]));
+    navigate(-1)
   }
-
-  useEffect(()=>{
-    localStorage.setItem('slotData', JSON.stringify(slotData));
-  }, [slotData])
 
   return (
     <Page title="Dashboard">
@@ -50,7 +45,7 @@ export default function SlotInfoForm() {
                 id="slotType"
                 name="lastName"
                 label="Slot Type"
-                fullWidth
+                fullwidth
                 variant="standard"
                 onChange={(e)=>setSlotType(e.target.value)}
               />
@@ -60,7 +55,7 @@ export default function SlotInfoForm() {
                 required
                 id="slotLocation"
                 label="Slot Location"
-                fullWidth
+                fullwidth
                 variant="standard"
                 onChange={(e)=>setSlotLocation(e.target.value)}
               />
@@ -68,25 +63,25 @@ export default function SlotInfoForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 id="slotCapacity"
-                fullWidth
+                fullwidth
                 label="Slot Capacity" 
                 variant="standard"
                 onChange={(e)=>setSlotCapacity(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 id="openSlotNumber" 
-                fullWidth
+                fullwidth
                 label="Open Slot Number" 
                 variant="standard"
                 onChange={(e)=>setOpenNumber(e.target.value)}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 id="filledSlotNumber" 
-                fullWidth
+                fullwidth
                 label="Filled Slot Number" 
                 variant="standard"
                 onChange={(e)=>setFilledNumber(e.target.value)}
@@ -101,7 +96,7 @@ export default function SlotInfoForm() {
               <Typography component='div'>Slot Status</Typography>
               <Checkbox
                 id="filledSlotNumber" 
-                fullWidth
+                fullwidth
                 label="Filled Slot Number" 
                 variant="standard"
                 checked={slotError}

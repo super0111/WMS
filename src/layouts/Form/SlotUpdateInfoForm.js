@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
 export default function SlotUpdateInfoForm(props) {
   const id = props.id;
+  const navigate = useNavigate();
   const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
   const [ updateItem, setUpdateItem ] = useState("")
   const [ slotType, setSlotType ] = useState("")
@@ -44,6 +46,9 @@ export default function SlotUpdateInfoForm(props) {
       }
       return item;
     }))
+    const items = slotData.filter((item)=>Number(item.id) !== Number(id));
+    localStorage.setItem('slotData', JSON.stringify([...slotData, items]))
+    navigate(-1)
   }
 
 
@@ -62,7 +67,7 @@ export default function SlotUpdateInfoForm(props) {
                 id="slotType"
                 name="lastName"
                 label="Slot Type"
-                fullWidth
+                fullwidth
                 variant="standard"
                 value={slotType}
                 onChange={(e)=>setSlotType(e.target.value)}
@@ -73,7 +78,7 @@ export default function SlotUpdateInfoForm(props) {
                 required
                 id="slotLocation"
                 label="Slot Location"
-                fullWidth
+                fullwidth
                 variant="standard"
                 value={slotLocation}
                 onChange={(e)=>setSlotLocation(e.target.value)}
@@ -82,7 +87,7 @@ export default function SlotUpdateInfoForm(props) {
             <Grid item xs={12} sm={6}>
               <TextField
                 id="slotCapacity"
-                fullWidth
+                fullwidth
                 label="Slot Capacity" 
                 variant="standard"
                 value={slotCapacity}
@@ -92,7 +97,7 @@ export default function SlotUpdateInfoForm(props) {
             {/* <Grid item xs={12} sm={6}>
               <TextField
                 id="openSlotNumber" 
-                fullWidth
+                fullwidth
                 label="Open Slot Number" 
                 variant="standard"
                 onChange={(e)=>setOpenNumber(e.target.value)}
@@ -101,7 +106,7 @@ export default function SlotUpdateInfoForm(props) {
             <Grid item xs={12} sm={6}>
               <TextField
                 id="filledSlotNumber" 
-                fullWidth
+                fullwidth
                 label="Filled Slot Number" 
                 variant="standard"
                 value={filledNumber}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
 export default function PalletInfoForm(props) {
   const slotId = props.id;
-  const [ id, setId ] = useState(0);
+  const navigate = useNavigate();
   const [ palletData, setPalletData ] = useState(JSON.parse(localStorage.getItem('palletData')) || []);
   const [ palletType, setPalletType ] = useState("")
   const [ palletDescription, setPalletDescription ] = useState("")
@@ -26,13 +27,9 @@ export default function PalletInfoForm(props) {
       palletCondition,
     }
     setPalletData([...palletData, formData])
+    localStorage.setItem('palletData', JSON.stringify([...palletData, formData]));
+    navigate(-1)
   }
-  console.log('palletData', palletData)
-
-
-  useEffect(()=>{
-    localStorage.setItem('palletData', JSON.stringify(palletData));
-  }, [palletData])
 
   return (
     <Page title="Dashboard">

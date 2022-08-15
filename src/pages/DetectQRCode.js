@@ -21,19 +21,12 @@ const DetectQRCode = () => {
   // const [ results, setResults ] = useState([]);
   const [ results, setResults ] = useState("");
   const [ resultText, setResultText ] = useState("");
-  const [ firstName, setFirstName ] = useState("");
   const [ noResult, setNoResult ] = useState(false);
   const [ type, setType ] = useState("")
-
-  const [ results1, setResults1 ] = useState([])
   const [ resultText1, setResultText1 ] = useState("");
-  const [ firstName1, setFirstName1 ] = useState("");
-  const [ noResult1, setNoResult1 ] = useState(false);
-
 
 	async function scanFile(selectedFile, type) {
-
-    setType(type)
+    setType(type);
 		setResultText("");
 		try {
 			const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
@@ -44,6 +37,8 @@ const DetectQRCode = () => {
 			setResultText(qrCode || "No QR code found");
 
       const dataInfo = JSON.parse(qrCode);
+
+      console.log("dataInfo", dataInfo)
       if(dataInfo.slot && type === "slot") {
         setResults(dataInfo.slot)
       } else 
