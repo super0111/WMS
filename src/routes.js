@@ -12,8 +12,11 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
-import AddNewItem from './pages/addNewItem';
-
+import AddNewSlot from './pages/addNewSlot';
+import UpdateSlot from './pages/updateSlot';
+import AddNewPallet from './pages/addNewPallet';
+import UpdatePallet from './pages/updatePallet';
+import DetectQRCode from './pages/DetectQRCode';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +32,11 @@ export default function Router() {
         { path: 'pallet/:id', element: <Pallet /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
-        { path: 'addNewItem', element: <AddNewItem /> },
+        { path: 'addNewSlot', element: <AddNewSlot /> },
+        { path: 'updateSlot/:id', element: <UpdateSlot /> },
+        { path: 'addNewPallet', element: <AddNewPallet /> },
+        { path: 'updatePallet', element: <UpdatePallet /> },
+        { path: 'detectQRCode', element: <DetectQRCode /> },
       ],
     },
     {

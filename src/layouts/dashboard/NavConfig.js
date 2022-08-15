@@ -22,8 +22,8 @@ const navConfig = [
     icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'Reports',
-   path: '/404',
+    title: 'QRCode Detect',
+    path: '/dashboard/detectQRCode',
     icon: getIcon('eva:file-text-fill'),
   },
   {

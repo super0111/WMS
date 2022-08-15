@@ -41,13 +41,17 @@ const Pallet = () => {
     }
   }
 
+  const handlePalletDelete = (id) => {
+
+  }
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">
           Warehouse Pallet <Typography variant='strong'>(Slot {id})</Typography>
         </Typography>
-        <Button variant="contained" component={RouterLink} to="/dashboard/addNewItem" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" component={RouterLink} to="/dashboard/addNewPallet" startIcon={<Iconify icon="eva:plus-fill" />}>
           New Pallet
         </Button>
       </Stack>
@@ -58,7 +62,7 @@ const Pallet = () => {
             <Grid container>
               {
                 items.map((item, i)=>(
-                  <Grid item md={4} sm={6} xs={12}
+                  <Grid key={i} item md={4} sm={6} xs={12}
                     sx={{
                       padding: '20px 15px 15px 15px',
                     }}
@@ -106,13 +110,41 @@ const Pallet = () => {
                           : null
                         }
                       </Box>
-                      <Box display="flex" justifyContent="flex-end">
+                      <Box display="flex" justifyContent="space-between">
+                        <Button
+                          variant="outlined"
+                          sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
+                          component={RouterLink} to="/dashboard/updatePallet"
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          variant="outlined" 
+                          sx={{
+                            fontSize: "12px",
+                            color: "#fe6c62",
+                            background: "white", 
+                            border: "1px solid #fe6c62",
+                            marginRight: "10px",
+                            '&:hover': {
+                              color: "white",
+                              background: "#fe6c62",  
+                              border: "1px solid #fe6c62",
+                            }
+                          }}
+                          onClick={()=>handlePalletDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
                         <Button 
                           variant="outlined" 
-                          sx={{fontSize: "12px", background: "white"}}
+                          sx={{
+                            fontSize: "12px", 
+                            background: "white"
+                          }}
                           onClick={() => generateQrCode(item.id)}
                         >
-                          Pallet QR Code
+                          QR Code
                         </Button>
                       </Box>
                     </Box>

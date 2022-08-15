@@ -20,12 +20,12 @@ import { slots } from "../data";
 const Slot = () => {
   const navigate = useNavigate()
   const [ selected, setSelected ] = useState([]);
-  const [ filterName, setFilterName ] = useState('');
+  const [ filterValue, setFilterValue ] = useState('');
   const [ selectSlot, setSelectSlot ] = useState("");
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
   const handleFilterByName = (event) => {
-    setFilterName(event.target.value);
+    setFilterValue(event.target.value);
   };
 
   const handleSlotClick = (id) => {
@@ -50,18 +50,22 @@ const Slot = () => {
     }
   }
 
+  const handleSlotDelete = (id) => {
+
+  }
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">
           Warehouse Slot
         </Typography>
-        <Button variant="contained" component={RouterLink} to="/dashboard/addNewItem" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" component={RouterLink} to="/dashboard/addNewSlot" startIcon={<Iconify icon="eva:plus-fill" />}>
           New Slot
         </Button>
       </Stack>
         <Card sx={{padding: "20px"}}>
-          <SlotListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <SlotListToolbar numSelected={selected.length} filterValue={filterValue} onFilterValue={handleFilterByName} />
 
           <Scrollbar>
             <Grid container>
@@ -127,13 +131,38 @@ const Slot = () => {
                           : null
                         }
                       </Box>
-                      <Box display="flex" justifyContent="flex-end" sx={{marginTop: "10px"}}>
+                      <Box display="flex" justifyContent="space-between" sx={{marginTop: "10px"}}>
+                        <Button
+                          variant="outlined" 
+                          sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
+                          component={RouterLink} to={`/dashboard/updateSlot/${item.id}`}
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          variant="outlined" 
+                          sx={{
+                            fontSize: "12px",
+                            color: "#fe6c62",
+                            background: "white", 
+                            border: "1px solid #fe6c62",
+                            marginRight: "10px",
+                            '&:hover': {
+                              color: "white",
+                              background: "#fe6c62",  
+                              border: "1px solid #fe6c62",
+                            }
+                          }}
+                          onClick={()=>handleSlotDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
                         <Button
                           variant="outlined" 
                           sx={{fontSize: "12px", background: "white"}}
                           onClick={() => generateQrCode(item.id)}
                         >
-                          Slot QR Code
+                          QR Code
                         </Button>
                       </Box>
                     </Box>

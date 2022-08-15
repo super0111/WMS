@@ -31,11 +31,11 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 
 SlotListToolbar.propTypes = {
   numSelected: PropTypes.number,
-  filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
+  filterValue: PropTypes.string,
+  onFilterValue: PropTypes.func,
 };
 
-export default function SlotListToolbar({ numSelected, filterName, onFilterName }) {
+export default function SlotListToolbar({ numSelected, filterValue, onFilterValue }) {
   return (
     <RootStyle
       sx={{
@@ -51,8 +51,8 @@ export default function SlotListToolbar({ numSelected, filterName, onFilterName 
         </Typography>
       ) : (
         <SearchStyle
-          value={filterName}
-          onChange={onFilterName}
+          value={filterValue}
+          onChange={onFilterValue}
           placeholder="Search slot..."
           startAdornment={
             <InputAdornment position="start">
