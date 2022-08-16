@@ -10,6 +10,7 @@ import {
   Box,
 } from '@mui/material';
 import QRCode from 'qrcode';
+import Moment from 'moment';
 import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar';
 import { PalletListToolbar } from '../sections/@dashboard/slot';
@@ -99,24 +100,24 @@ const Pallet = () => {
                         <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{item.id}</Typography>
                       </Box>
                       <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "5px",}}>
-                        <Typography sx={{width: "70%"}} varient="p">Pallet Slot type</Typography>
-                        <Typography varient="p">{item.palletType}</Typography>
+                        <Typography sx={{width: "50%"}} varient="span">Pallet Slot type</Typography>
+                        <Typography varient="span">{item.palletType}</Typography>
                       </Box>
                       <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "5px",}}>
-                        <Typography sx={{width: "70%"}} variant="p">Pallet Descrition</Typography>
-                        <Typography varient="p">{item.palletDescription}</Typography>
+                        <Typography sx={{width: "50%"}} variant="span">Pallet Descrition</Typography>
+                        <Typography varient="span">{item.palletDescription}</Typography>
                       </Box>
                       <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "5px",}}>
-                        <Typography sx={{width: "70%"}} variant="p">Date Created</Typography>
-                        <Typography varient="p">{item.createdDate}</Typography>
+                        <Typography sx={{width: "50%"}} variant="span">Date Created</Typography>
+                        <Typography varient="span" sx={{fontSize: "15px"}}>{ Moment(item.createdDate).format('YYYY-MM-DD HH:mm') }</Typography>
                       </Box>
                       <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "5px",}}>
-                        <Typography sx={{width: "70%"}} variant="p">Last Update</Typography>
-                        <Typography varient="p">{item.lastedDate}</Typography>
+                        <Typography sx={{width: "50%"}} variant="span">Last Update</Typography>
+                        <Typography varient="span" sx={{fontSize: "15px"}}>{ Moment(item.lastedDate).format('YYYY-MM-DD HH:mm') }</Typography>
                       </Box>
                       <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "5px",}}>
-                        <Typography sx={{width: "70%"}} variant="p">Pallet condition</Typography>
-                        <Typography varient="p">{item.palletCondition}</Typography>
+                        <Typography sx={{width: "50%"}} variant="span">Pallet condition</Typography>
+                        <Typography varient="span">{item.palletCondition}</Typography>
                       </Box>
                       <Box display="flex" justifyContent="center">
                         { qrCodeUrl && selectPallet === item.id ? 

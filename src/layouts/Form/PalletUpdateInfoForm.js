@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
@@ -16,6 +20,13 @@ export default function PalletInfoForm(props) {
   const [ createdDate, setCreatedDate ] = useState("")
   const [ lastedDate, setLastedDate ] = useState("")
   const [ palletCondition, setPalletCondition ] = useState("")
+
+  const handleCreatedDateChange = (newValue) => {
+    setCreatedDate(newValue); 
+  };
+  const handleLastedDateChange = (newValue) => {
+    setLastedDate(newValue);
+  };
 
   useEffect(() => {
     const item = palletData.find((item)=>Number(item.id) === Number(id));
@@ -89,25 +100,29 @@ export default function PalletInfoForm(props) {
                 onChange={(e)=>setPalletDescription(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="createdDate"
-                fullWidth
-                label="Data Created" 
-                variant="standard"
-                value={createdDate}
-                onChange={(e)=>setCreatedDate(e.target.value)}
-              />
+            <Grid item xs={12} sm={6} sx={{marginTop: "20px"}}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Stack spacing={3}>
+                  <DateTimePicker
+                    label="Created Date"
+                    value={createdDate}
+                    onChange={handleCreatedDateChange}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Stack>
+              </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="lastedDate" 
-                fullWidth
-                label="Last Update" 
-                variant="standard"
-                value={lastedDate}
-                onChange={(e)=>setLastedDate(e.target.value)}
-              />
+            <Grid item xs={12} sm={6} sx={{marginTop: "20px"}}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Stack spacing={3}>
+                  <DateTimePicker
+                    label="Lasted Date"
+                    value={lastedDate}
+                    onChange={handleLastedDateChange}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Stack>
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -124,7 +139,7 @@ export default function PalletInfoForm(props) {
                 variant="contained"
                 onClick={handleUpdatePallet}
               >
-                Create new Pallet
+                Update Pallet
               </Button>
             </Grid>
           </Grid>

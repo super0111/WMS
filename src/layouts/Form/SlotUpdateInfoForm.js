@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
@@ -32,6 +34,10 @@ export default function SlotUpdateInfoForm(props) {
   }, [slotData])
 
   const handleCreateSlot = () => {
+    if( slotType === "" || slotLocation === "" || slotCapacity === "" || filledNumber === "" ) {
+      toast.info("Enter all filed value")
+      return
+    }
     const formData = {
       id: Number(id),
       slotType,
@@ -39,7 +45,6 @@ export default function SlotUpdateInfoForm(props) {
       slotCapacity,
       filledNumber,
     }
-    console.log('updated data: ', formData)
     setSlotData(slotData.map((item) => {
       if(item.id === formData.id) {
         return formData
@@ -86,6 +91,7 @@ export default function SlotUpdateInfoForm(props) {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                type='number'
                 id="slotCapacity"
                 fullwidth
                 label="Slot Capacity" 
@@ -105,6 +111,7 @@ export default function SlotUpdateInfoForm(props) {
             </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
+                type='number'
                 id="filledSlotNumber" 
                 fullwidth
                 label="Filled Slot Number" 
@@ -123,6 +130,7 @@ export default function SlotUpdateInfoForm(props) {
             </Grid>
           </Grid>
          </Paper>
+         <ToastContainer />
        </Container>
     </Page>
   );

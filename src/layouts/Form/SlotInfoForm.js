@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button, Checkbox  } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 
 export default function SlotInfoForm() {
   const navigate = useNavigate();
   const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
-  const [ id, setId ] = useState();
   const [ slotType, setSlotType ] = useState("");
   const [ slotLocation, setSlotLocation ] = useState("");
   const [ slotCapacity, setSlotCapacity ] = useState("");
@@ -17,6 +18,11 @@ export default function SlotInfoForm() {
 
   const handleCreateSlot = () => {
     const id = slotData.length +1;
+    if( slotType === "" || slotLocation === "" || slotCapacity === "" || filledNumber === "" ) {
+      toast.info("Enter all filed value")
+      return
+    }
+
     const formData = {
       id,
       slotType,
@@ -62,6 +68,7 @@ export default function SlotInfoForm() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                type='number'
                 id="slotCapacity"
                 fullwidth
                 label="Slot Capacity" 
@@ -80,6 +87,7 @@ export default function SlotInfoForm() {
             </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
+                type='number'
                 id="filledSlotNumber" 
                 fullwidth
                 label="Filled Slot Number" 
@@ -113,6 +121,7 @@ export default function SlotInfoForm() {
             </Grid>
           </Grid>
          </Paper>
+         <ToastContainer />
        </Container>
     </Page>
   );
