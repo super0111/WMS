@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
 import Stack from '@mui/material/Stack';
@@ -8,7 +8,6 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
 
 export default function PalletInfoForm(props) {
   const slotId = props.id;

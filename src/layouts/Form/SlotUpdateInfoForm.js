@@ -4,7 +4,6 @@ import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/mater
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
 
 export default function SlotUpdateInfoForm(props) {
   const id = props.id;
@@ -56,8 +55,6 @@ export default function SlotUpdateInfoForm(props) {
     navigate(-1)
   }
 
-
-
   return (
     <Page title="Dashboard">
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -100,15 +97,6 @@ export default function SlotUpdateInfoForm(props) {
                 onChange={(e)=>setSlotCapacity(e.target.value)}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                id="openSlotNumber" 
-                fullwidth
-                label="Open Slot Number" 
-                variant="standard"
-                onChange={(e)=>setOpenNumber(e.target.value)}
-              />
-            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 type='number'

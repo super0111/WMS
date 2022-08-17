@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button, Checkbox  } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
 
 export default function SlotInfoForm() {
   const navigate = useNavigate();
@@ -76,15 +75,6 @@ export default function SlotInfoForm() {
                 onChange={(e)=>setSlotCapacity(e.target.value)}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                id="openSlotNumber" 
-                fullwidth
-                label="Open Slot Number" 
-                variant="standard"
-                onChange={(e)=>setOpenNumber(e.target.value)}
-              />
-            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 type='number'

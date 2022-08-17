@@ -6,7 +6,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
 
 export default function PalletInfoForm(props) {
   const id = props.id;
