@@ -18,6 +18,7 @@ import { PalletListToolbar } from '../sections/@dashboard/slot';
 
 const Pallet = () => {
   const { id } = useParams();
+  const [ token, setToken ] = useState(JSON.parse(localStorage.getItem('token')) || null)
   const [ palletData, setPalletData ] = useState(JSON.parse(localStorage.getItem('palletData')) || []);
   const [ searchDatas, setSearchData ] = useState(JSON.parse(localStorage.getItem('palletData')) || []);
   const [ selected, setSelected ] = useState([]);
@@ -67,9 +68,11 @@ const Pallet = () => {
         <Typography variant="h4">
           Warehouse Pallet <Typography variant='strong'>(Slot {id})</Typography>
         </Typography>
-        <Button variant="contained" component={RouterLink} to={`/dashboard/addNewPallet/${id}`} startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Pallet
-        </Button>
+        { token.userRole === "admin" &&
+          <Button variant="contained" component={RouterLink} to={`/dashboard/addNewPallet/${id}`} startIcon={<Iconify icon="eva:plus-fill" />}>
+            New Pallet
+          </Button>
+        }
       </Stack>
         <Card sx={{padding: "20px"}}>
           <PalletListToolbar numSelected={selected.length} filterValue={filterValue} onFilterValue={handleFilterByName} />
@@ -128,31 +131,35 @@ const Pallet = () => {
                         }
                       </Box>
                       <Box display="flex" justifyContent="space-between">
-                        <Button
-                          variant="outlined"
-                          sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
-                          component={RouterLink} to={`/dashboard/updatePallet/${item.id}`}
-                        >
-                          Update
-                        </Button>
-                        <Button
-                          variant="outlined" 
-                          sx={{
-                            fontSize: "12px",
-                            color: "#fe6c62",
-                            background: "white", 
-                            border: "1px solid #fe6c62",
-                            marginRight: "10px",
-                            '&:hover': {
-                              color: "white",
-                              background: "#fe6c62",  
-                              border: "1px solid #fe6c62",
-                            }
-                          }}
-                          onClick={()=>handlePalletDelete(item.id)}
-                        >
-                          Delete
-                        </Button>
+                        { token.userRole === "admin" &&
+                          <>
+                            <Button
+                              variant="outlined"
+                              sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
+                              component={RouterLink} to={`/dashboard/updatePallet/${item.id}`}
+                            >
+                              Update
+                            </Button>
+                            <Button
+                              variant="outlined" 
+                              sx={{
+                                fontSize: "12px",
+                                color: "#fe6c62",
+                                background: "white", 
+                                border: "1px solid #fe6c62",
+                                marginRight: "10px",
+                                '&:hover': {
+                                  color: "white",
+                                  background: "#fe6c62",  
+                                  border: "1px solid #fe6c62",
+                                }
+                              }}
+                              onClick={()=>handlePalletDelete(item.id)}
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        } 
                         <Button 
                           variant="outlined" 
                           sx={{

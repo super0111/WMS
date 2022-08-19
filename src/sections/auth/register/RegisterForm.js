@@ -7,21 +7,23 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { Stack, IconButton, InputAdornment, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // components
+import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField, RHFSelectField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
+  const [ users, setUsers ] = useState(JSON.parse(localStorage.getItem('users')) || []);
+  const [ userRole, setUserRole ] = useState("");
+  const [ showPassword, setShowPassword ] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
-    userRole: Yup.string().required('User Role required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
@@ -29,12 +31,9 @@ export default function RegisterForm() {
   const defaultValues = {
     firstName: '',
     lastName: '',
-    userRole: '',
     email: '',
     password: '',
   };
-
-console.log("defaultValuesdefaultValues", defaultValues);
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
@@ -46,11 +45,30 @@ console.log("defaultValuesdefaultValues", defaultValues);
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (a) => {
-    // navigate('/dashboard', { replace: true });
-    console.log(a)
-console.log("defaultValuesdefaultValues", defaultValues);
+  const onSubmit = async (value) => {
+    const firstName = value.firstName;
+    const lastName = value.lastName;
+    const email = value.email;
+    const password = value.password;
+    const id = users.length;
+    const formData = {
+      id,
+      firstName,
+      lastName,
+      userRole,
+      email,
+      password,
+    }
+    
+    const user = users.find((item)=>item.email === email);
 
+    if(user) {
+      toast.error("User already exsit");
+      return;
+    }
+
+    localStorage.setItem('users', JSON.stringify([...users, formData]));
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -61,7 +79,19 @@ console.log("defaultValuesdefaultValues", defaultValues);
           <RHFTextField name="lastName" label="Last name" />
         </Stack>
 
-        <RHFSelectField name="userRole" label="Email address" />
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">User Role</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="UserRole"
+            value={userRole}
+            onChange={(e)=>setUserRole(e.target.value)}
+          >
+            <MenuItem value="admin">Administrator </MenuItem>
+            <MenuItem value="user">User</MenuItem>
+          </Select>
+        </FormControl>
 
         <RHFTextField name="email" label="Email address" />
 
@@ -84,6 +114,7 @@ console.log("defaultValuesdefaultValues", defaultValues);
           Register
         </LoadingButton>
       </Stack>
+      <ToastContainer />
     </FormProvider>
   );
 }

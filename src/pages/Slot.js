@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Card,
@@ -16,6 +16,7 @@ import { SlotListToolbar } from '../sections/@dashboard/slot';
 
 const Slot = () => {
   const navigate = useNavigate()
+  const [ token, setToken ] = useState(JSON.parse(localStorage.getItem('token')) || null)
   const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
   const [ selected, setSelected ] = useState([]);
   const [ filterValue, setFilterValue ] = useState('');
@@ -68,9 +69,11 @@ const Slot = () => {
         <Typography variant="h4">
           Warehouse Slot
         </Typography>
-        <Button variant="contained" component={RouterLink} to="/dashboard/addNewSlot" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Slot
-        </Button>
+        { token.userRole === "admin" &&
+          <Button variant="contained" component={RouterLink} to="/dashboard/addNewSlot" startIcon={<Iconify icon="eva:plus-fill" />}>
+            New Slot
+          </Button>
+        }
       </Stack>
         <Card sx={{padding: "20px"}}>
           <SlotListToolbar numSelected={selected.length} filterValue={filterValue} onFilterValue={handleFilterByName} />
@@ -141,31 +144,35 @@ const Slot = () => {
                         }
                       </Box>
                       <Box display="flex" justifyContent="space-between" sx={{marginTop: "10px"}}>
-                        <Button
-                          variant="outlined" 
-                          sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
-                          component={RouterLink} to={`/dashboard/updateSlot/${item.id}`}
-                        >
-                          Update
-                        </Button>
-                        <Button
-                          variant="outlined" 
-                          sx={{
-                            fontSize: "12px",
-                            color: "#fe6c62",
-                            background: "white", 
-                            border: "1px solid #fe6c62",
-                            marginRight: "10px",
-                            '&:hover': {
-                              color: "white",
-                              background: "#fe6c62",  
-                              border: "1px solid #fe6c62",
-                            }
-                          }}
-                          onClick={()=>handleSlotDelete(item.id)}
-                        >
-                          Delete
-                        </Button>
+                        { token.userRole === "admin" &&
+                          <>
+                            <Button
+                              variant="outlined" 
+                              sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
+                              component={RouterLink} to={`/dashboard/updateSlot/${item.id}`}
+                            >
+                              Update
+                            </Button>
+                            <Button
+                              variant="outlined" 
+                              sx={{
+                                fontSize: "12px",
+                                color: "#fe6c62",
+                                background: "white", 
+                                border: "1px solid #fe6c62",
+                                marginRight: "10px",
+                                '&:hover': {
+                                  color: "white",
+                                  background: "#fe6c62",  
+                                  border: "1px solid #fe6c62",
+                                }
+                              }}
+                              onClick={()=>handleSlotDelete(item.id)}
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        }
                         <Button
                           variant="outlined" 
                           sx={{fontSize: "12px", background: "white"}}

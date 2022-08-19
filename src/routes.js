@@ -1,14 +1,11 @@
 import { 
-  BrowserRouter,
   Routes,
   Route, 
-  Navigate,
 } from "react-router-dom";
 import PrivateRoutes from "./utils/privateRoute";
 // layouts
 import DashboardLayout from './layouts/dashboard';
 // import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-//
 import Blog from './pages/Blog';
 import User from './pages/User';
 import Slot from './pages/Slot';
@@ -26,7 +23,7 @@ import DetectQRCode from './pages/DetectQRCode';
 
 // ----------------------------------------------------------------------
 
-export default function Router1() {
+export default function Router() {
   return(
 
     <Routes>

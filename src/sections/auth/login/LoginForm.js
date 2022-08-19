@@ -1,22 +1,20 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// components
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const [ emailValue, setEmailValue ] = useState("");
-  const [ passwordValue, setPasswordValue ] = useState("");
   const [ showPassword, setShowPassword ] = useState(false);
 
   const LoginSchema = Yup.object().shape({
@@ -41,11 +39,27 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (value) => {
+    const email = value.email;
+    const password = value.password;
+    const users = JSON.parse(localStorage.getItem('users'));
 
-  console.log("emailemail", defaultValues.email)
-
-    // navigate('/dashboard', { replace: true });
+    if(users?.length > 0) {
+      const user = users.find((item)=>item.email===email);
+      if(user) {
+        if(user.password === password) {
+          localStorage.setItem('token', JSON.stringify(user));
+          navigate('/dashboard/app', { replace: true });
+        }
+        else {
+          toast.error("Password is not match");
+        }
+      }
+      else {
+        toast.error("Invalid User");
+      }
+    }
+    else { toast.error("User isn't exsit") }
   };
 
   return (
@@ -82,6 +96,7 @@ export default function LoginForm() {
       <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
         Login
       </LoadingButton>
+      <ToastContainer />
     </FormProvider>
   );
 }
