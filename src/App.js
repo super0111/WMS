@@ -1,5 +1,6 @@
 // routes
-import Router from './routes';
+// import Router from './routes';
+import Router1 from './routes';
 // theme
 import ThemeProvider from './theme';
 // components
@@ -13,7 +14,10 @@ export default function App() {
     <ThemeProvider>
       <ScrollToTop />
       <BaseOptionChartStyle />
-      <Router />
+      <Router1 />
+
+
+
     </ThemeProvider>
   );
 }

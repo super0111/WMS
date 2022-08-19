@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, IconButton, InputAdornment } from '@mui/material';
+import { Stack, IconButton, InputAdornment, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFTextField, RHFSelectField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +21,7 @@ export default function RegisterForm() {
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
+    userRole: Yup.string().required('User Role required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
@@ -28,9 +29,12 @@ export default function RegisterForm() {
   const defaultValues = {
     firstName: '',
     lastName: '',
+    userRole: '',
     email: '',
     password: '',
   };
+
+console.log("defaultValuesdefaultValues", defaultValues);
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
@@ -42,8 +46,11 @@ export default function RegisterForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+  const onSubmit = async (a) => {
+    // navigate('/dashboard', { replace: true });
+    console.log(a)
+console.log("defaultValuesdefaultValues", defaultValues);
+
   };
 
   return (
@@ -53,6 +60,8 @@ export default function RegisterForm() {
           <RHFTextField name="firstName" label="First name" />
           <RHFTextField name="lastName" label="Last name" />
         </Stack>
+
+        <RHFSelectField name="userRole" label="Email address" />
 
         <RHFTextField name="email" label="Email address" />
 

@@ -54,14 +54,12 @@ export default function LoginForm() {
         <RHFTextField 
           name="email" 
           label="Email address" 
-          onChange={(e)=>setEmailValue(e.target.value)}
         />
 
         <RHFTextField
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}
-          onChange={(e)=>setPasswordValue(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
