@@ -6,17 +6,12 @@ import { Grid, Container, Typography } from '@mui/material';
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 // sections
-import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
-} from '../sections/@dashboard/app';
+import { Budget } from '../sections/@dashboard/app/budget';
+import { Sales } from '../sections/@dashboard/app/sales';
+import { TasksProgress } from '../sections/@dashboard/app/tasks-progress';
+import { TotalCustomers } from '../sections/@dashboard/app/total-customers';
+import { TotalProfit } from '../sections/@dashboard/app/total-profit';
+import { TrafficByDevice } from '../sections/@dashboard/app/traffic-by-device';
 
 // ----------------------------------------------------------------------
 
@@ -26,21 +21,24 @@ export default function DashboardApp() {
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Warehouse"  icon={'ant-design:android-filled'} />
+        <Grid container spacing={3} >
+          <Grid item lg={3} sm={6} xl={3} xs={12} >
+            <Budget />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Shop"  color="info" icon={'ant-design:apple-filled'} />
+          <Grid item xl={3} lg={3} sm={6} xs={12} >
+            <TotalCustomers />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Reports"  color="warning" icon={'ant-design:windows-filled'} />
+          <Grid item xl={3} lg={3} sm={6} xs={12} >
+            <TasksProgress />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Pilot Request"  color="error" icon={'ant-design:bug-filled'} />
+          <Grid item xl={3} lg={3} sm={6} xs={12} >
+            <TotalProfit sx={{ height: '100%' }} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Drone Repairs"  color="error" icon={'ant-design:bug-filled'} />
+          <Grid item lg={8} md={12} xl={9} xs={12} >
+            <Sales />
+          </Grid>
+          <Grid item lg={4} md={6} xl={3} xs={12}>
+            <TrafficByDevice sx={{ height: '100%' }} />
           </Grid>
         </Grid>
       </Container>

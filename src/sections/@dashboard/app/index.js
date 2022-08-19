@@ -1,9 +1,6 @@
-export { default as AppTasks } from './AppTasks';
-export { default as AppNewsUpdate } from './AppNewsUpdate';
-export { default as AppCurrentVisits } from './AppCurrentVisits';
-export { default as AppOrderTimeline } from './AppOrderTimeline';
-export { default as AppTrafficBySite } from './AppTrafficBySite';
-export { default as AppWebsiteVisits } from './AppWebsiteVisits';
-export { default as AppWidgetSummary } from './AppWidgetSummary';
-export { default as AppCurrentSubject } from './AppCurrentSubject';
-export { default as AppConversionRates } from './AppConversionRates';
+// export { default as Budget } from './budget';
+// export { default as Sales } from './sales';
+// export { default as TasksProgress } from './tasksProgress';
+// export { default as TotalCustomers } from './totalCustomers';
+// export { default as   TotalProfit } from './totalProfit';
+// export { default as TrafficByDevice } from './trafficByDevice';
