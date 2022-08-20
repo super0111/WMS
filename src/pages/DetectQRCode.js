@@ -1,10 +1,7 @@
-
 import React, { useState, useRef } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Card,
   Stack,
-  Button,
   Container,
   Typography,
   Grid,
@@ -12,9 +9,9 @@ import {
 } from '@mui/material';
 import ScanCanvasQR from 'react-pdf-image-qr-scanner';
 
-import Iconify from '../components/Iconify';
 import ScannerSlotFileUpload from '../layouts/Form/ScannerSlotFileUpload';
 import ScannerPalletFileUpload from '../layouts/Form/ScannerPalletFileUpload';
+import { QRScanResult } from '../components/QRScanResult';
 
 const DetectQRCode = () => {
 	const canvasScannerRef = useRef();
@@ -23,71 +20,126 @@ const DetectQRCode = () => {
   const [ noResult, setNoResult ] = useState(false);
   const [ type, setType ] = useState("")
   const [ resultText1, setResultText1 ] = useState("");
+  const [qrScanResults, setQrScanResults] = useState([]) // name, type, result
 
-	async function scanFile(selectedFile, type) {
-    setType(type);
-		setResultText("");
-		try {
-			const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
-      if(qrCode === null || results === "") {
-        setNoResult(true)
+  async function scanSingleQRCode(file) {
+    const supportedFiles = ['application/pdf','image/png','image/jpeg'];
+    // const supportedFileEnds = supportedFiles.map(file => file.split('/')[1]).join(', ');
+    // return new Promise((resolve, reject) => {
+      try {
+        if(supportedFiles.includes(file.type)) {
+          const code = await canvasScannerRef.current.scanFile(file)
+          const qr = code ? JSON.parse(code) : ''
+          // const t = qr && qr.slot ? 'slot' : 'pallet'
+          return Promise.resolve({ name: file.name, type: '', result: qr})
+        }
+        return Promise.resolve({ name: file.name, type: '', result: ''})
+      } catch {
+        // resolve({ name: file.name, type: '', result: ''})
+        return Promise.resolve({ name: file.name, type: '', result: ''})
       }
-			setResultText(qrCode || "No QR code found");
-      const dataInfo = JSON.parse(qrCode);
-      console.log("dataInfo", dataInfo)
-      if(dataInfo.slot && type === "slot") {
-        setResults(dataInfo.slot)
-      } else 
-      if(dataInfo.pallet) {
-        setResults("")
+    // })
+  }
+  async function scanMultipleQRCode(files) {
+    setQrScanResults([])
+    // const supportedFiles = ['application/pdf','image/png','image/jpeg'];
+    // const supportedFileEnds = supportedFiles.map(file => file.split('/')[1]).join(', ');
+    let result = []
+
+    if(files && files.length) {
+      const fileList = []
+      const {length} = files
+
+      for (let i = 0; i < length; i += 1) {
+        fileList.push(files[i])
       }
-		} catch (e) {
-			if (e?.name==="InvalidPDFException") {
-				setResultText("Invalid PDF");
-			} else if (e instanceof Event) {
-				setResultText("Invalid Image");
-			} else {
-				console.log(e)
-				setResultText("Unknown error");
-			}
-		}
+      console.log(files)
+      result = await Promise.all(fileList.map(async (file) => scanSingleQRCode(file)
+      //   // const code = await canvasScannerRef.current.scanFile(file);
+      //   // let item = {}
+      //   // console.log(item)
+      //   // result.push(item)
+      ))
+      // for(const file of files) {
+      //   let item = { name: file.name, type: '', result: ''}
+      //   if(supportedFiles.includes(file.type)) {
+      //     const code = await canvasScannerRef.current.scanFile(file)
+          
+      //   } else {
+      //     console.log('this file is not supported file, file must be a pdf/image')
+      //   }
+      // }
+    } else {
+      console.log('file not found')
+    }
+    console.log('scan result: ', result)
+    setQrScanResults(result)
   }
 
-  async function scanFile1(selectedFile, type) {
-    setType(type);
-		setResultText("");
-		try {
-			const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
+	// async function scanFile(selectedFile, type) {
+  //   setType(type);
+	// 	setResultText("");
+	// 	try {
+	// 		const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
+  //     if(qrCode === null || results === "") {
+  //       setNoResult(true)
+  //     }
+	// 		setResultText(qrCode || "No QR code found");
+  //     const dataInfo = JSON.parse(qrCode);
+  //     console.log("dataInfo", dataInfo)
+  //     if(dataInfo.slot && type === "slot") {
+  //       setResults(dataInfo.slot)
+  //     } else 
+  //     if(dataInfo.pallet) {
+  //       setResults("")
+  //     }
+	// 	} catch (e) {
+	// 		if (e?.name==="InvalidPDFException") {
+	// 			setResultText("Invalid PDF");
+	// 		} else if (e instanceof Event) {
+	// 			setResultText("Invalid Image");
+	// 		} else {
+	// 			console.log(e)
+	// 			setResultText("Unknown error");
+	// 		}
+	// 	}
+  // }
 
-      if(qrCode === null || results === "") {
-        setNoResult(true)
-      }
-			setResultText(qrCode || "No QR code found");
-      const dataInfo = JSON.parse(qrCode);
-      if(dataInfo.slot) {
-        setResults("")
-      } else 
-      if(dataInfo.pallet && type === "pallet") {
-        setResults(dataInfo.pallet)
-      }
-		} catch (e) {
-			if (e?.name==="InvalidPDFException") {
-				setResultText("Invalid PDF");
-			} else if (e instanceof Event) {
-				setResultText("Invalid Image");
-			} else {
-				console.log(e)
-				setResultText("Unknown error");
-			}
-		}
+  async function scanFile1(selectedFile, type) {
+    // setType(type);
+		// setResultText("");
+		// try {
+		// 	const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
+
+    //   if(qrCode === null || results === "") {
+    //     setNoResult(true)
+    //   }
+		// 	setResultText(qrCode || "No QR code found");
+    //   const dataInfo = JSON.parse(qrCode);
+    //   if(dataInfo.slot) {
+    //     setResults("")
+    //   } else 
+    //   if(dataInfo.pallet && type === "pallet") {
+    //     setResults(dataInfo.pallet)
+    //   }
+		// } catch (e) {
+		// 	if (e?.name==="InvalidPDFException") {
+		// 		setResultText("Invalid PDF");
+		// 	} else if (e instanceof Event) {
+		// 		setResultText("Invalid Image");
+		// 	} else {
+		// 		console.log(e)
+		// 		setResultText("Unknown error");
+		// 	}
+		// }
   }
 
   const handleSlotSave = () => {
-    const id = results.id;
-    const slotType = results.slotType;
-    const slotLocation = results.slotLocation;
-    const slotCapacity = results.slotCapacity;
-    const filledNumber = results.filledNumber;
+    const {id} = results;
+    const {slotType} = results;
+    const {slotLocation} = results;
+    const {slotCapacity} = results;
+    const {filledNumber} = results;
     const formData = {
       id,
       slotType,
@@ -99,12 +151,12 @@ const DetectQRCode = () => {
   }
 
   const handlePalletSave = () => {
-    const id = results.id;
-    const palletType = results.palletType;
-    const palletDescription = results.palletDescription;
-    const createdDate = results.createdDate;
-    const lastedDate = results.lastedDate;
-    const palletCondition = results.palletCondition;
+    const {id} = results;
+    const {palletType} = results;
+    const {palletDescription} = results;
+    const {createdDate} = results;
+    const {lastedDate} = results;
+    const {palletCondition} = results;
     const formData = {
       id,
       palletType,
@@ -138,7 +190,8 @@ const DetectQRCode = () => {
                   console.log(err);
                   setResultText(err.error) 
                 }} 
-                onFileSelectSuccess={(file)=>{scanFile(file, "slot")}}
+                // onFileSelectSuccess={(file)=>{scanFile(file, "slot")}}
+                onFileSelectSuccess={(files) => scanMultipleQRCode(files, "slot")}
                 style={{ display: 'flex' }}
               />
               <ScannerPalletFileUpload 
@@ -150,7 +203,7 @@ const DetectQRCode = () => {
                 style={{ display: 'flex' }}
               />
             </Box>
-            {
+            {/* {
               type === "slot" ?
               <Box
                 sx={{
@@ -269,9 +322,19 @@ const DetectQRCode = () => {
                   </div> : "No Results"
                 }
               </Box>
-            }
+            } */}
           </Grid>
         </Grid>
+        
+        <Box>
+          <Grid container>
+            {qrScanResults.map((item, key) => (
+              <Grid item key={key} lg={6} justifyContent="center" p="12px">
+                <QRScanResult item={item} handleSlotSave={handleSlotSave} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Card>
     </Container>
   )
