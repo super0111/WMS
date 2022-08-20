@@ -35,20 +35,20 @@ export default function ScannerSlotFileUpload({ onFileSelectSuccess, onFileSelec
 
     const handleFileInput = (e) => {
         // Makes sure it's the correct file type.
-        const file = e.target.files[0];
+        const files = e.target.files;
 
-        if (supportedFiles.includes(file.type)) {
-            setFileName(file.name);
-            onFileSelectSuccess(file);
-        } else {
-            onFileSelectError({ error: "File must be a PDF/Image" });
-        }
+        // if (supportedFiles.includes(file.type)) {
+            // setFileName(file.name);
+            onFileSelectSuccess(files);
+        // } else {
+            // onFileSelectError({ error: "File must be a PDF/Image" });
+        // }
     };
 
     return (
         <div className="file-uploader">
             <StyledFileUploader>
-                <input style={{display: "none"}} type="file" onChange={handleFileInput} accept={supportedFiles.join(",")}/>
+                <input style={{display: "none"}} type="file" onChange={handleFileInput} accept={supportedFiles.join(",")} multiple />
                 Slot QR Code
             </StyledFileUploader>
             <StyledFileName>{fileName}{fileName==="" && `Supports: ${supportedFileEnds}`}</StyledFileName>
