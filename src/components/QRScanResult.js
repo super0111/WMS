@@ -1,8 +1,6 @@
 import { Box, Typography, Button } from '@mui/material'
 
 export const QRScanResult = ({ item, handleSlotSave }) => {
-  // const fileName = item.name
-  // const type = item.result ? item.result.slot ? 'slot' : 'pallet' : ''
   const results = item.result && item.result.slot ? item.result.slot : ''
   return (
     <Box
