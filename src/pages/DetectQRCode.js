@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Card,
   Stack,
@@ -8,22 +8,19 @@ import {
   Box,
   Button,
 } from '@mui/material';
-import Moment from 'moment';
 import ScanCanvasQR from 'react-pdf-image-qr-scanner';
 
 import ScannerSlotFileUpload from '../layouts/Form/ScannerSlotFileUpload';
-import ScannerPalletFileUpload from '../layouts/Form/ScannerPalletFileUpload';
-import { QRScanResult } from '../components/QRScanResult';
+import { QRScanSlotResult } from '../components/QRScanSlotResult';
+import { QRScanPalletResult } from '../components/QRScanPalletResult';
 
 const DetectQRCode = () => {
 	const canvasScannerRef = useRef();
-  const [ results, setResults ] = useState("");
   const [ resultText, setResultText ] = useState("");
-  const [ noResult, setNoResult ] = useState(false);
-  const [ type, setType ] = useState("")
-  const [ resultText1, setResultText1 ] = useState("");
-  const [qrScanSlotResults, setQrScanSlotResults] = useState([]) // name, type, result
-  const [qrScanPalletResults, setQrScanPalletResults] = useState([]) // name, type, result
+  const [ qrScanResults, setQrScanResults ] = useState([]) // name, type, result
+  const [ detectData, setDetectData ] = useState(JSON.parse(localStorage.getItem('detectData')) || []);
+
+  const [ allQRFile, setAllQRFile ] = useState([])
 
   async function scanSingleQRCode(file) {
     const supportedFiles = ['application/pdf','image/png','image/jpeg'];
@@ -31,6 +28,7 @@ const DetectQRCode = () => {
         if(supportedFiles.includes(file.type)) {
           const code = await canvasScannerRef.current.scanFile(file)
           const qr = code ? JSON.parse(code) : ''
+
           return Promise.resolve({ name: file.name, type: '', result: qr})
         }
         return Promise.resolve({ name: file.name, type: '', result: ''})
@@ -38,9 +36,12 @@ const DetectQRCode = () => {
         return Promise.resolve({ name: file.name, type: '', result: ''})
       }
   }
+
   async function scanMultipleQRCode(files) {
-    setQrScanSlotResults([]);
-    let result = [];
+    setAllQRFile(files)
+    setQrScanResults([]);
+    let detectResult = [];
+
     if(files && files.length) {
       const fileList = [];
       const {length} = files;
@@ -48,75 +49,23 @@ const DetectQRCode = () => {
       for (let i = 0; i < length; i += 1) {
         fileList.push(files[i]);
       }
-      result = await Promise.all(fileList.map(async (file) => scanSingleQRCode(file)));
+
+      detectResult = await Promise.all(fileList.map(async (file) => scanSingleQRCode(file)));
+
     } else {
       console.log('file not found');
     }
-    setQrScanSlotResults(result);
+    setQrScanResults(detectResult);
+  }  
+
+  const handleScanDataSave = () => {
+    const resultArray = qrScanResults.map((item, i) => item.result );
+    setDetectData([...detectData, ...resultArray])
   }
 
-  async function scanFile1(selectedFile, type) {
-    setType(type);
-		setResultText("");
-		try {
-			const qrCode = await canvasScannerRef.current.scanFile(selectedFile);
-
-      if(qrCode === null || results === "") {
-        setNoResult(true)
-      }
-			setResultText(qrCode || "No QR code found");
-      const dataInfo = JSON.parse(qrCode);
-      if(dataInfo.slot) {
-        setResults("")
-      } else 
-      if(dataInfo.pallet && type === "pallet") {
-        setResults(dataInfo.pallet)
-      }
-		} catch (e) {
-			if (e?.name==="InvalidPDFException") {
-				setResultText("Invalid PDF");
-			} else if (e instanceof Event) {
-				setResultText("Invalid Image");
-			} else {
-				console.log(e)
-				setResultText("Unknown error");
-			}
-		}
-  }
-
-  const handleSlotSave = () => {
-    const {id} = results;
-    const {slotType} = results;
-    const {slotLocation} = results;
-    const {slotCapacity} = results;
-    const {filledNumber} = results;
-    const formData = {
-      id,
-      slotType,
-      slotLocation,
-      slotCapacity,
-      filledNumber,
-    }
-    localStorage.setItem('detectedPallet', JSON.stringify(formData));
-  }
-
-  const handlePalletSave = () => {
-    const {id} = results;
-    const {palletType} = results;
-    const {palletDescription} = results;
-    const {createdDate} = results;
-    const {lastedDate} = results;
-    const {palletCondition} = results;
-    const formData = {
-      id,
-      palletType,
-      palletDescription,
-      createdDate,
-      lastedDate,
-      palletCondition,
-    }
-    localStorage.setItem('detectedSlot', JSON.stringify(formData));
-  }
+  useEffect(()=>{
+    localStorage.setItem('detectData', JSON.stringify(detectData));
+  }, [detectData])
 
   return (
     <Container>
@@ -125,10 +74,18 @@ const DetectQRCode = () => {
           QR Code Detection
         </Typography>
       </Stack>
-      <Card sx={{padding: "20px"}}>
+      <Card 
+        sx={{
+          padding: "20px",
+          '@media(maxWidth: 500px)' : {
+            padding: '0px'
+          }
+        }}>
         <Grid container>
           <Grid item md={6} sm={6} xs={12}
             sx={{
+              display: "flex",
+              justifyContent: "center",
               padding: '20px 15px 15px 15px',
               margin: "auto"
             }}
@@ -137,89 +94,44 @@ const DetectQRCode = () => {
               <ScanCanvasQR ref={canvasScannerRef}/>
               <ScannerSlotFileUpload 
                 onFileSelectError={(err) => { 
-                  setResultText(err.error) 
-                }} 
-                onFileSelectSuccess={(files) => scanMultipleQRCode(files, "slot")}
-                style={{ display: 'flex' }}
-              />
-              <ScannerPalletFileUpload 
-                onFileSelectError={(err) => { 
-                  console.log(err);
-                  setResultText1(err.error)
-                }} 
-                onFileSelectSuccess={(file)=>{scanFile1(file, "pallet")}}
+                  setResultText(err.error)
+                }}
+                onFileSelectSuccess={(files) => scanMultipleQRCode(files)}
                 style={{ display: 'flex' }}
               />
             </Box>
-            {
-              type === "pallet" &&
-              <Box
-                sx={{
-                  padding: '20px 15px 15px 15px',
-                  borderRadius: "10px",
-                  border: "1px solid #eeeeee",
-                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-                  "&:hover": {
-                    boxShadow: "3px 3px 4px rgba(0, 0, 0, 0.12), 3px 3px 4px rgba(0, 0, 0, 0.24)",
-                  },
-                }}
-              >
-                {
-                  results ?
-                  <div style={{cursor: "pointer", position: "relative"}} aria-hidden="true">
-                    <Box display="flex" justifyContent="center" sx={{width : "100px", margin: "auto", borderRadius: "10px", padding: "3px", marginBottom: "10px", backgroundColor: "white"}}>
-                      <Typography sx={{marginRight: "10px", fontSize: "14px", fontWeight: "bold"}} varient="p">Pallet ID.</Typography>
-                      <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{results.id}</Typography>
-                    </Box>
-                    <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                      <Typography sx={{width: "70%"}} varient="p">Pallet type</Typography>
-                      <Typography varient="p">{results.palletType}</Typography>
-                    </Box>
-                    <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                      <Typography sx={{width: "70%"}} variant="p">Pallet Description</Typography>
-                      <Typography varient="p">{results.palletDescription}</Typography>
-                    </Box>
-                    <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                      <Typography sx={{width: "70%"}} variant="p">Data Created</Typography>
-                      <Typography varient="p">{ Moment(results.createdDate).format('YYYY-MM-DD HH:mm') }</Typography>
-                    </Box>
-                    <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                      <Typography sx={{width: "70%"}} variant="p">Last Update</Typography>
-                      <Typography varient="p">{ Moment(results.lastedDate).format('YYYY-MM-DD HH:mm') }</Typography>
-                    </Box>
-                    <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                      <Typography sx={{width: "70%"}} variant="p">Pallet Condition</Typography>
-                      <Typography varient="p">{results.palletCondition}</Typography>
-                    </Box>
-                    <Box display="flex" justifyContent="center" sx={{width: "100%", padding: "10px 0"}}>
-                      <Button 
-                        variant="outlined"
-                        sx={{
-                          width: "200px",
-                          height: "30px",
-                          fontSize: "14px",
-                          margin: "auto",
-                        }}
-                        onClick={handlePalletSave}
-                      >
-                        Save QR Detected Data
-                      </Button>
-                    </Box>
-
-                  </div> : "No Results"
-                }
-              </Box>
-            }
           </Grid>
         </Grid>
         
         <Box>
           <Grid container>
-            {qrScanSlotResults.map((item, key) => (
-              <Grid item key={key} lg={6} justifyContent="center" p="12px">
-                <QRScanResult item={item} handleSlotSave={handleSlotSave} />
-              </Grid>
-            ))}
+            { qrScanResults.map((item, key) => (
+              <Grid item key={key} lg={6} md={6} sm={12}  justifyContent="center" p="12px" sx={{margin: "auto", width: "100%"}}>
+                { item.result.slot ?
+                  <QRScanSlotResult item={item} i={key} allQRFile={allQRFile}/> :  
+                  <QRScanPalletResult item={item} i={key} allQRFile={allQRFile} /> 
+                }
+              </Grid> ))
+            }
+            { qrScanResults.length === 0 &&   
+              <div style={{margin: "auto", fontSize: "18px", color: "#de6035"}}>No Detect QR Code</div>
+            }
+            { qrScanResults.length > 0 &&
+              <Box display="flex" justifyContent="center" sx={{width: "100%", padding: "10px 0"}}>
+                <Button 
+                  variant="outlined"
+                  sx={{
+                    width: "200px",
+                    height: "30px",
+                    fontSize: "14px",
+                    margin: "auto",
+                  }}
+                  onClick={() =>handleScanDataSave()}
+                >
+                  Save QR Detected Data
+                </Button>
+              </Box>
+            }
           </Grid>
         </Box>
       </Card>

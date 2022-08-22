@@ -47,8 +47,8 @@ export default function Router() {
           <Route path='addNewPallet/:id' element={ <AddNewPallet /> } />
           <Route path='updatePallet/:id' element={ <UpdatePallet /> } />
           <Route path='detectQRCode' element={ <DetectQRCode /> } />
-          <Route path='404' element={ <NotFound /> } />
         </Route>
+        <Route path='/404' element={ <NotFound /> } />
       </Route>
     </Routes>
   )

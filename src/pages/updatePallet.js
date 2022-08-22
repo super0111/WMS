@@ -2,7 +2,6 @@ import { Grid, Container, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Page from '../components/Page';
 import PalletUpdateInfoForm from '../layouts/Form/PalletUpdateInfoForm';
-import Iconify from '../components/Iconify';
 
 export default function UpdatePallet() {
   const id = useParams();
