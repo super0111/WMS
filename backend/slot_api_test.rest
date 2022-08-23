@@ -1,0 +1,64 @@
+###
+POST http://localhost:8000/dashboard/access
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777837
+}
+
+###
+GET http://localhost:8000/dashboard/slot/getAll
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777837
+}
+
+###
+GET http://localhost:8000/dashboard/slot/getAll
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777837
+}
+
+###
+POST http://localhost:8000/dashboard/slot/create
+Content-Type: application/json
+
+{
+  "slot_serial": "9972777855",
+  "creator": "mike5",
+  "slot_type": "type1",
+  "description": "description1",
+  "open_slots": 34,
+  "filled_slots": 24
+}
+
+
+
+###
+PUT http://localhost:8000/dashboard/slot/updatebySerial
+Content-Type: application/json
+
+{
+  "pallet_serial": "9972777853",
+  "slot_serial": "9972777855",
+  "creator": "John",
+  "pallet_type": "motors",
+  "description": "Drone motor compoents",
+  "date_created": "2022-08-20 16:51:34",
+  "last_update": "2022-08-20 16:51:34",
+  "good_value": 456.90
+  
+}
+
+###
+DELETE http://localhost:8000/dashboard/slot/deleteBySerial
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777855
+}
+
+

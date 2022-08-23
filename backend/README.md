@@ -1,0 +1,70 @@
+# warehouseBackend
+base URL : http://warehouse-managment-server-dev.us-east-1.elasticbeanstalk.com/
+
+###
+POST http://localhost:8000/dashboard/access
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777837
+}
+
+###
+GET http://localhost:8000/dashboard/pallet/getAll
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777837
+}
+
+###
+GET http://localhost:8000/dashboard/pallet/getAll
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777837
+}
+
+###
+POST http://localhost:8000/dashboard/pallet/create
+Content-Type: application/json
+
+{
+  "pallet_serial": "9972777855",
+  "slot_serial": "9972777855",
+  "creator": "mike5",
+  "pallet_type": "type1",
+  "description": "description1",
+  "date_created": "2022-08-20 16:51:34",
+  "last_update": "2022-08-20 16:51:34",
+  "good_value": 456.90
+  
+}
+
+
+
+###
+PUT http://localhost:8000/dashboard/pallet/updatebySerial
+Content-Type: application/json
+
+{
+  "pallet_serial": "9972777853",
+  "slot_serial": "9972777855",
+  "creator": "John",
+  "pallet_type": "motors",
+  "description": "Drone motor compoents",
+  "date_created": "2022-08-20 16:51:34",
+  "last_update": "2022-08-20 16:51:34",
+  "good_value": 456.90
+  
+}
+
+###
+DELETE http://localhost:8000/dashboard/pallet/deleteBySerial
+Content-Type: application/json
+
+{
+  "pallet_serial": 9972777855
+}
+
+
