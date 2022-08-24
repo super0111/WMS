@@ -6,8 +6,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 router.get("/getAll", async function (req, res, next) {
-    const slot_serial = req.body.slot_serial;
-    console.log("slot_serial: ", req.body);
+  const slot_serial = req.body.slot_serial;
   slot.getAll(slot_serial, (err, data) => {
     if (err)
       res.status(500).send({
@@ -19,8 +18,9 @@ router.get("/getAll", async function (req, res, next) {
   });
 });
 
-router.get("/getBySerial",  function (req, res) {
-  slot.findById(req.body.slot_serial, (err, data) => {
+router.get("/getBySerial/:id",  function (req, res) {
+  const id = req.params.id;
+  slot.findById(id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
@@ -34,8 +34,6 @@ router.get("/getBySerial",  function (req, res) {
     } else res.send(data);
   });
 });
-
-
 
 router.post("/create",  function (req, res) {
   // Validate request
@@ -67,6 +65,7 @@ router.delete("/deleteBySerial", function (req, res, next) {
       }
     } else
       res.send({
+        data: data,
         message: `slot deleted successfully!`,
       });
   });
@@ -87,7 +86,6 @@ router.delete("/deleteAll",  function (req, res) {
   });
 });
 
-
 router.put("/updatebySerial",(req, res) => {
   // Validate Request
   if (!req.body) {
@@ -95,7 +93,6 @@ router.put("/updatebySerial",(req, res) => {
       message: "Content can not be empty!"
     });
   }
-  console.log(req.body);
   slot.updateBySerial(
     req.body.slot_serial,
     req.body,
@@ -114,7 +111,5 @@ router.put("/updatebySerial",(req, res) => {
     }
   );
 });
-
-
 
 module.exports = router;

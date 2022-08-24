@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button, Checkbox  } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
+import { slotCreate } from "../../apis/slot";
 
 export default function SlotInfoForm() {
   const navigate = useNavigate();
-  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  // const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  const [ slotData, setSlotData ] = useState([]);
+  const [ slotSerial, setSlotSerial ] = useState("");
   const [ slotType, setSlotType ] = useState("");
-  const [ slotLocation, setSlotLocation ] = useState("");
+  const [ creator, setCreator ] = useState("");
+  const [ slotDescription, setSlotDescription ] = useState("");
   const [ slotCapacity, setSlotCapacity ] = useState("");
   const [ openNumber, setOpenNumber ] = useState("");
   const [ filledNumber, setFilledNumber ] = useState("");
   const [ slotError, setChecked ] = useState(false);
 
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem('token'));
+    setCreator(user.email);
+  }, [creator])
+
   const handleCreateSlot = () => {
     const id = slotData.length +1;
-    if( slotType === "" || slotLocation === "" || slotCapacity === "" || filledNumber === "" ) {
+    if( slotType === "" || slotDescription === "" || openNumber === "" || filledNumber === "" ) {
       toast.info("Enter all filed value")
       return
     }
-
     const formData = {
-      id,
-      slotType,
-      slotLocation,
-      slotCapacity,
-      openNumber,
-      filledNumber,
-      slotError,
+      slot_serial: slotSerial,
+      slot_type: slotType,
+      description: slotDescription,
+      open_slots: openNumber,
+      filled_slots: filledNumber,
+      creator,
     }
-    setSlotData([...slotData, formData]);
-    localStorage.setItem('slotData', JSON.stringify([...slotData, formData]));
-    navigate(-1)
+    slotCreate(formData)
+    .then((res)=>{
+      if(res.status === 204) {
+        toast.info("new slot create successfully");
+      }
+      else toast.error("new slot create failed")
+    })
   }
 
   return (
@@ -47,10 +59,21 @@ export default function SlotInfoForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 required
+                id="slotSerial"
+                name="lastName"
+                label="Slot Serial"
+                fullwidth="true"
+                variant="standard"
+                onChange={(e)=>setSlotSerial(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
                 id="slotType"
                 name="lastName"
                 label="Slot Type"
-                fullwidth
+                fullwidth="true"
                 variant="standard"
                 onChange={(e)=>setSlotType(e.target.value)}
               />
@@ -58,28 +81,28 @@ export default function SlotInfoForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="slotLocation"
-                label="Slot Location"
-                fullwidth
+                id="slotDescription"
+                label="Slot Description"
+                fullwidth="true"
                 variant="standard"
-                onChange={(e)=>setSlotLocation(e.target.value)}
+                onChange={(e)=>setSlotDescription(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 type='number'
-                id="slotCapacity"
-                fullwidth
-                label="Slot Capacity" 
+                id="slotOpenNumber"
+                fullwidth="true"
+                label="Slot Open Number" 
                 variant="standard"
-                onChange={(e)=>setSlotCapacity(e.target.value)}
+                onChange={(e)=>setOpenNumber(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 type='number'
                 id="filledSlotNumber" 
-                fullwidth
+                fullwidth="true"
                 label="Filled Slot Number" 
                 variant="standard"
                 onChange={(e)=>setFilledNumber(e.target.value)}
@@ -94,7 +117,7 @@ export default function SlotInfoForm() {
               <Typography component='div'>Slot Status</Typography>
               <Checkbox
                 id="filledSlotNumber" 
-                fullwidth
+                fullwidth="true"
                 label="Filled Slot Number" 
                 variant="standard"
                 checked={slotError}

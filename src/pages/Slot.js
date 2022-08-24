@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   Card,
   Stack,
@@ -13,32 +14,42 @@ import QRCode from 'qrcode';
 import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar';
 import { SlotListToolbar } from '../sections/@dashboard/slot';
+import config from '../config';
+import { slotDelete } from '../apis/slot';
 
 const Slot = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [ token, setToken ] = useState(JSON.parse(localStorage.getItem('token')) || null)
-  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  // const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  const [ slotData, setSlotData ] = useState([]);
   const [ selected, setSelected ] = useState([]);
   const [ filterValue, setFilterValue ] = useState('');
   const [ selectSlot, setSelectSlot ] = useState("");
   const [ qrCodeUrl, setQrCodeUrl ] = useState('');
-  const [ searchDatas, setSearchData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  // const [ searchDatas, setSearchData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  const [ searchDatas, setSearchData ] = useState([]);
 
+
+  console.log("slotData", slotData)
   const handleFilterByName = (event) => {
+console.log("e.tart", event.target.value)
+
     setFilterValue(event.target.value)
-    
     if(event.target.value !== "") {
-      const searchData = slotData.filter((item) => Number(item.id) === Number(event.target.value) )
+      const searchData = slotData.filter((item) => 
+        (item.SLOT_SERIAL).indexOf((event.target.value)) > -1
+        // console.log(item.SLOT_SERIAL)
+      )
       setSearchData(searchData)
       return;
     }
     setSearchData(slotData)
   };
 
-
   const handleSlotClick = (id) => {
     navigate(`/dashboard/pallet/${id}`)
   }
+
   const handleKeyDown = (ev, id) => {
     if (ev.keyCode === 13) {
       navigate(`/dashboard/pallet/${id}`)
@@ -46,7 +57,7 @@ const Slot = () => {
   }
 
   const generateQrCode = async (id) => {
-    const slot = slotData.find(item=>item.id === id);
+    const slot = slotData.find(item=>item === id);
     const qrCodeData = JSON.stringify({ slot })
     setSelectSlot(id)
     try {
@@ -57,11 +68,25 @@ const Slot = () => {
     }
   }
 
-  const handleSlotDelete = (id) => {
-    const deleteData = searchDatas.filter((item)=>item.id !== id);
-    localStorage.setItem('slotData', JSON.stringify(deleteData));
-    setSearchData(deleteData)
+  useEffect(()=>{
+    const fetchPosts = async () => {
+      const res = await axios(`${config.server_url}dashboard/slot/getAll`);
+      setSlotData(res.data);
+      setSearchData(res.data)
+    };
+    fetchPosts();
+  }, [])
+
+/* eslint-disable camelcase */
+
+  const handleSlotDelete = (slot_serial) => {
+    slotDelete(slot_serial)
+    .then((res)=>{
+      setSlotData(slotData.filter((item)=>Number(item.SLOT_SERIAL) !== Number(res.data)))
+      setSearchData(slotData.filter((item)=>Number(item.SLOT_SERIAL) !== Number(res.data)))
+    })
   }
+
 
   return (
     <Container>
@@ -93,7 +118,7 @@ const Slot = () => {
                         // eslint-disable-next-line no-nested-ternary                       
                         backgroundColor: `${item.slotError
                         ? '#ff7a6b'
-                        :  Number(item.slotCapacity) >= Number(item.filledNumber) && Number(item.slotCapacity) !== Number(item.filledNumber)
+                        :  Number(item.OPEN_SLOTS) >= Number(item.FILLED_SLOTS)
                         ? "hsl(80deg 38% 51%)"
                         : 'hsl(9deg 68% 85%)'}`,
                         padding: '20px 15px 15px 15px',
@@ -105,33 +130,38 @@ const Slot = () => {
                         },
                       }}
                     >
-                      <div style={{cursor: "pointer", position: "relative"}} aria-hidden="true" onClick={()=>handleSlotClick(item.id)} onKeyDown={()=>handleKeyDown(item.id)}>
+                      <div style={{cursor: "pointer", position: "relative"}} aria-hidden="true" onClick={()=>handleSlotClick(item.SLOT_SERIAL)} onKeyDown={()=>handleKeyDown(item.SLOT_SERIAL)}>
                         <Box display="flex" justifyContent="center" sx={{width : "80px", margin: "auto", borderRadius: "10px", padding: "3px", marginBottom: "10px", backgroundColor: "white"}}>
                           <Typography sx={{marginRight: "10px", fontSize: "14px", fontWeight: "bold"}} varient="p">Slot ID.</Typography>
-                          <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{item.id}</Typography>
+                          <Typography sx={{ fontSize: "14px", fontWeight: "bold"}} varient="p">{i+1}</Typography>
                         </Box>
                         {
                           item.slotError && <Typography sx={{position: "absolute", top: "-10px", right: "0px", fontSize: "14px", color: "white"}} variant="p">Slot Error</Typography>
                         }
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                          <Typography sx={{width: "70%"}} varient="p">Slot type</Typography>
-                          <Typography varient="p">{item.slotType}</Typography>
+                          <Typography sx={{width: "70%"}} variant="p">Slot Serial</Typography>
+                          <Typography varient="p">{item.SLOT_SERIAL}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
-                          <Typography sx={{width: "70%"}} variant="p">Slot Location</Typography>
-                          <Typography varient="p">{item.slotLocation}</Typography>
+                          <Typography sx={{width: "70%"}} varient="p">Slot type</Typography>
+                          <Typography varient="p">{item.SLOT_TYPE}</Typography>
+                        </Box>
+                        <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
+                          <Typography sx={{width: "70%"}} variant="p">Slot Description</Typography>
+                          <Typography varient="p">{item.DESCRIPTION}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Slot Pallet Capacity</Typography>
-                          <Typography varient="p">{item.slotCapacity}</Typography>
+                          <Typography varient="p">{item.OPEN_SLOTS + item.FILLED_SLOTS}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Nubmer of open Slots</Typography>
-                          <Typography varient="p">{item.slotCapacity-item.filledNumber<=0 ? 0 : item.slotCapacity-item.filledNumber}</Typography>
+                          {/* <Typography varient="p">{item.slotCapacity-item.filledNumber<=0 ? 0 : item.slotCapacity-item.filledNumber}</Typography> */}
+                          <Typography varient="p">{item.OPEN_SLOTS}</Typography>
                         </Box>
                         <Box display="flex" justifyContent="flex-start" sx={{padding: "3px 8px", marginBottom: "10px", backgroundColor: "white", border: "1px solid #7db1f5", borderRadius: "3px"}}>
                           <Typography sx={{width: "70%"}} variant="p">Number of Filled Slots </Typography>
-                          <Typography varient="p">{item.filledNumber}</Typography>
+                          <Typography varient="p">{item.FILLED_SLOTS}</Typography>
                         </Box>
                       </div>
 
@@ -149,7 +179,7 @@ const Slot = () => {
                             <Button
                               variant="outlined" 
                               sx={{fontSize: "12px", background: "white", marginRight: "10px"}}
-                              component={RouterLink} to={`/dashboard/updateSlot/${item.id}`}
+                              component={RouterLink} to={`/dashboard/updateSlot/${item.SLOT_SERIAL}`}
                             >
                               Update
                             </Button>
@@ -167,7 +197,7 @@ const Slot = () => {
                                   border: "1px solid #fe6c62",
                                 }
                               }}
-                              onClick={()=>handleSlotDelete(item.id)}
+                              onClick={()=>handleSlotDelete(item.SLOT_SERIAL)}
                             >
                               Delete
                             </Button>
@@ -176,7 +206,7 @@ const Slot = () => {
                         <Button
                           variant="outlined" 
                           sx={{fontSize: "12px", background: "white"}}
-                          onClick={() => generateQrCode(item.id)}
+                          onClick={() => generateQrCode(item.SLOT_SERIAL)}
                         >
                           QR Code
                         </Button>

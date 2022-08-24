@@ -1,58 +1,67 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import { Grid, Container, Typography,TextField,Paper, Button  } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Page from '../../components/Page';
+import config from '../../config';
+import { slotUpdate } from "../../apis/slot";
 
 export default function SlotUpdateInfoForm(props) {
   const id = props.id;
   const navigate = useNavigate();
-  const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
-  const [ updateItem, setUpdateItem ] = useState("")
+  const [ slotData, setSlotData ] = useState([]);
+  const [ creator, setCreator ] = useState("");
+  const [ slotSerial, setSlotSerial ] = useState("")
   const [ slotType, setSlotType ] = useState("")
-  const [ slotLocation, setSlotLocation ] = useState("")
-  const [ slotCapacity, setSlotCapacity ] = useState("")
-  const [ filledNumber, setFilledNumber ] = useState("")
+  const [ slotDescription, setSlotDescription ] = useState("")
+  const [ slotOpens, setSlotOpens ] = useState("")
+  const [ slotFills, setSlotFills ] = useState("")
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem('token'));
+    setCreator(user.email);
+  }, [creator])
 
   useEffect(() => {
-    const item = slotData.find((item)=>item.id === Number(id));
-    setUpdateItem(item);
+    const fetchPosts = async () => {
+      const res = await axios(`${config.server_url}dashboard/slot/getBySerial/${id}`);
+      setSlotData(res.data);
+    };
+    fetchPosts();
   }, [])
 
   useEffect(() => {
-    setSlotType(updateItem?.slotType)
-    setSlotLocation(updateItem?.slotLocation)
-    setSlotCapacity(updateItem?.slotCapacity)
-    setFilledNumber(updateItem?.filledNumber)
-  }, [updateItem])
-
-  useEffect(() => {
-    console.log('updated slot data: ', slotData)
-    localStorage.setItem('slotData', JSON.stringify(slotData))
+    setSlotSerial(slotData?.SLOT_SERIAL)
+    setSlotType(slotData?.SLOT_TYPE)
+    setSlotDescription(slotData?.DESCRIPTION)
+    setSlotOpens(slotData?.OPEN_SLOTS)
+    setSlotFills(slotData?.FILLED_SLOTS)
   }, [slotData])
 
-  const handleCreateSlot = () => {
-    if( slotType === "" || slotLocation === "" || slotCapacity === "" || filledNumber === "" ) {
+  const handleUpdateSlot = () => {
+    if( slotSerial === "" || slotType === "" || slotDescription === "" || slotOpens === "" || slotFills === "" ) {
       toast.info("Enter all filed value")
       return
     }
     const formData = {
-      id: Number(id),
-      slotType,
-      slotLocation,
-      slotCapacity,
-      filledNumber,
+      creator,
+      slot_serial: slotSerial,
+      slot_type: slotType,
+      description: slotDescription,
+      open_slots: slotOpens,
+      filled_slots: slotFills,
     }
-    setSlotData(slotData.map((item) => {
-      if(item.id === formData.id) {
-        return formData
+    slotUpdate(formData)
+    .then((res)=>{
+      console.log("update ressss", res.creator)
+      if(res.creator) {
+        toast.info("Slot Update Successfully")
+      } else {
+        toast.error("Slot Update Failed")
       }
-      return item;
-    }))
-    const items = slotData.filter((item)=>Number(item.id) !== Number(id));
-    localStorage.setItem('slotData', JSON.stringify([...slotData, items]))
-    navigate(-1)
+    })
   }
 
   return (
@@ -66,10 +75,22 @@ export default function SlotUpdateInfoForm(props) {
             <Grid item xs={12} sm={6}>
               <TextField
                 required
+                id="slotSerial"
+                name="lastName"
+                label="Slot Serial"
+                fullwidth="true"
+                variant="standard"
+                value={slotSerial}
+                onChange={(e)=>setSlotSerial(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
                 id="slotType"
                 name="lastName"
                 label="Slot Type"
-                fullwidth
+                fullwidth="true"
                 variant="standard"
                 value={slotType}
                 onChange={(e)=>setSlotType(e.target.value)}
@@ -78,40 +99,40 @@ export default function SlotUpdateInfoForm(props) {
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="slotLocation"
-                label="Slot Location"
-                fullwidth
+                id="slotDescription"
+                label="Slot Description"
+                fullwidth="true"
                 variant="standard"
-                value={slotLocation}
-                onChange={(e)=>setSlotLocation(e.target.value)}
+                value={slotDescription}
+                onChange={(e)=>setSlotDescription(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 type='number'
-                id="slotCapacity"
-                fullwidth
-                label="Slot Capacity" 
+                id="slotOpens"
+                fullwidth="true"
+                label="Open Slots" 
                 variant="standard"
-                value={slotCapacity}
-                onChange={(e)=>setSlotCapacity(e.target.value)}
+                value={slotOpens}
+                onChange={(e)=>setSlotOpens(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 type='number'
-                id="filledSlotNumber" 
-                fullwidth
-                label="Filled Slot Number" 
+                id="slotFills" 
+                fullwidth="true"
+                label="Filled Slots" 
                 variant="standard"
-                value={filledNumber}
-                onChange={(e)=>setFilledNumber(e.target.value)}
+                value={slotFills}
+                onChange={(e)=>setSlotFills(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <Button 
                 variant="contained"
-                onClick={handleCreateSlot}
+                onClick={handleUpdateSlot}
               >
                 Update slot
               </Button>

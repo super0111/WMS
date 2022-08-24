@@ -2,7 +2,6 @@ import { Grid, Container, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Page from '../components/Page';
 import SlotUpdateInfoForm from '../layouts/Form/SlotUpdateInfoForm';
-import Iconify from '../components/Iconify';
 
 export default function UpdateSlot() {
   const id = useParams();

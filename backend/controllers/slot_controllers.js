@@ -10,7 +10,6 @@ const SlotModel = function (slot_serial, slot) {
 };
 
 SlotModel.create = (slot, result) => {
-  console.log("slot: ",slot )
   connection.exec(
     "insert into SLOT(slot_serial, creator, slot_type, description, open_slots, filled_slots) values (" + slot.slot_serial + ",'" + slot.creator + "','" + slot.slot_type + "','" + slot.description + "','" + slot.open_slots + "'," + slot.filled_slots + ");",
     slot,
@@ -20,11 +19,12 @@ SlotModel.create = (slot, result) => {
         result(err, null);
         return;
       }
+
       console.log("add new  slot value: ", {
-        id: res.slot_serial,
+        id: slot.slot_serial,
         ...slot,
       });
-      result(null, { id: res.slot_serial, ...slot });
+      result(null, { id: slot.slot_serial, ...slot });
     }
   );
 };
@@ -38,7 +38,6 @@ SlotModel.getAll = (slot, result) => {
       result(null, err);
       return;
     }
-    console.log("slot: ", res);
     result(null, res);
   });
 };
@@ -78,8 +77,11 @@ SlotModel.remove = (slot_serial, result) => {
         return;
       }
       console.log("deleted slot with slot_serial: ", slot_serial);
-      result(null, res);
-    }
+
+      result(null, slot_serial);
+    },
+    // query = "SELECT * FROM SLOT",
+    // result(null, query)
   );
 };
 
@@ -96,6 +98,7 @@ SlotModel.removeAll = (result) => {
 };
 
 SlotModel.updateBySerial = (slot_serial, slot, result) => {
+
   connection.exec(
     "UPDATE SLOT SET  creator = ?, slot_type = ?, description = ?, open_slots = ?, filled_slots = ? WHERE slot_serial = ?",
     [slot.creator, slot.slot_type, slot.description, slot.open_slots, slot.filled_slots, slot_serial],
