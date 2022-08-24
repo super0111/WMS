@@ -19,26 +19,19 @@ import { slotDelete } from '../apis/slot';
 
 const Slot = () => {
   const navigate = useNavigate();
-  const [ token, setToken ] = useState(JSON.parse(localStorage.getItem('token')) || null)
-  // const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
+  const [ token, setToken ] = useState(JSON.parse(localStorage.getItem('token')) || null);
   const [ slotData, setSlotData ] = useState([]);
   const [ selected, setSelected ] = useState([]);
   const [ filterValue, setFilterValue ] = useState('');
   const [ selectSlot, setSelectSlot ] = useState("");
   const [ qrCodeUrl, setQrCodeUrl ] = useState('');
-  // const [ searchDatas, setSearchData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
   const [ searchDatas, setSearchData ] = useState([]);
 
-
-  console.log("slotData", slotData)
   const handleFilterByName = (event) => {
-console.log("e.tart", event.target.value)
-
     setFilterValue(event.target.value)
     if(event.target.value !== "") {
       const searchData = slotData.filter((item) => 
         (item.SLOT_SERIAL).indexOf((event.target.value)) > -1
-        // console.log(item.SLOT_SERIAL)
       )
       setSearchData(searchData)
       return;
