@@ -7,7 +7,7 @@ const slotCreate = (slot, history) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      ...slot, // Use your own property name / key
+      ...slot,
     }),
   })
   .then((res) =>{
@@ -22,7 +22,7 @@ const slotUpdate = (slot, history) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      ...slot, // Use your own property name / key
+      ...slot,
     }),
   })
   .then((res) =>{
@@ -39,7 +39,7 @@ const slotDelete = (slot_serial, history) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      slot_serial, // Use your own property name / key
+      slot_serial,
     }),
   })
   .then((res) =>{
