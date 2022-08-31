@@ -55,7 +55,6 @@ export default function SlotUpdateInfoForm(props) {
     }
     slotUpdate(formData)
     .then((res)=>{
-      console.log("update ressss", res.creator)
       if(res.creator) {
         toast.info("Slot Update Successfully")
       } else {
