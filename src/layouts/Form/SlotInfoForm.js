@@ -8,7 +8,6 @@ import { slotCreate } from "../../apis/slot";
 
 export default function SlotInfoForm() {
   const navigate = useNavigate();
-  // const [ slotData, setSlotData ] = useState(JSON.parse(localStorage.getItem('slotData')) || []);
   const [ slotData, setSlotData ] = useState([]);
   const [ slotSerial, setSlotSerial ] = useState("");
   const [ slotType, setSlotType ] = useState("");
