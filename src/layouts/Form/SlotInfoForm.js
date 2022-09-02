@@ -18,7 +18,6 @@ export default function SlotInfoForm() {
   const [ filledNumber, setFilledNumber ] = useState("");
   const [ slotError, setChecked ] = useState(false);
 
-
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem('token'));
     setCreator(user.email);
