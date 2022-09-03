@@ -29,7 +29,7 @@ export default function PalletInfoForm(props) {
   const handleCreatePallet = () => {
     const id = palletData.length +1;
     if( palletType === "" || palletDescription === "" || createdDate === "" || lastedDate === "" || palletCondition === "" ) {
-      toast.info("Enter all filed value")
+      toast.info("Enter all filed values")
       return
     }
     const formData = {
